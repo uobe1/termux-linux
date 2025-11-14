@@ -13,14 +13,14 @@ TermuxForLinux 是一个用于在 Android Termux 环境中安装和运行多种 
 ├── .gitignore               # Git 忽略文件
 ├── README.md                # 说明文档
 ├── IFLOW.md                 # 项目文档
-├── mirrors.conf             # 镜像源配置文件
+├── mirror.conf             # 镜像源配置文件
 ├── src/                     # Rust 源代码目录
 │   ├── main.rs              # 主程序入口和用户界面
 │   ├── distro.rs            # Linux 发行版管理模块
 │   └── utils.rs             # 工具函数模块
 ├── target/                  # Rust 编译输出目录
 │   └── release/             # 发布版本输出
-│       └── termux-linux-install  # Rust 版本可执行文件
+│       └── Ostermux-install  # Rust 版本可执行文件
 ```
 
 ## 新版本特性
@@ -67,7 +67,7 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 - 保留友好的交互式界面
 
 ### 🆕 配置文件换源
-- 通过 `mirrors.conf` 统一管理镜像源
+- 通过 `mirror.conf` 统一管理镜像源
 - 支持自定义镜像源URL
 - 针对中国网络环境优化
 
@@ -75,7 +75,7 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 
 ### 1. 主程序
 
-#### termux-linux-install
+#### Ostermux-install
 - **全新架构**: 支持多系统并行管理
 - **命令行支持**: 完整的CLI参数支持
 - **交互式界面**: 简化的4选项主菜单
@@ -88,22 +88,22 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 
 ```bash
 # 交互式界面
-./termux-linux-install
+./Ostermux-install
 
 # 列出已安装系统
-./termux-linux-install --list
+./Ostermux-install --list
 
 # 安装指定发行版
-./termux-linux-install --install ubuntu --name "开发环境"
+./Ostermux-install --install ubuntu --name "开发环境"
 
 # 最小化安装
-./termux-linux-install --install debian --minimal
+./Ostermux-install --install debian --minimal
 
 # 卸载指定系统
-./termux-linux-install --uninstall debian1
+./Ostermux-install --uninstall debian1
 
 # 显示帮助
-./termux-linux-install --help
+./Ostermux-install --help
 ```
 
 ### 3. 启动脚本
@@ -141,7 +141,7 @@ cd TermuxForLinux
 cargo build --release
 
 # 运行程序
-./target/release/termux-linux-install
+./target/release/Ostermux-install
 ```
 
 ### 交互式安装
@@ -157,7 +157,7 @@ cargo build --release
 ### 启动已安装的系统
 
 ```bash
-cd $HOME/Termux-Linux/debian1
+cd $HOME/Ostermux/debian1
 ./start.sh
 
 # 或直接传递命令
@@ -212,7 +212,7 @@ debian-mirror = https://mirrors.163.com/debian/
 
 1. 安装过程需要稳定的网络连接
 2. 首次安装会下载较大的根文件系统压缩包
-3. 各发行版独立存储在 `$HOME/Termux-Linux/` 目录下
+3. 各发行版独立存储在 `$HOME/Ostermux/` 目录下
 4. 系统ID自动生成，格式为 `{OS_NAME}{NUMBER}`
 5. 支持小屏幕终端操作，界面自适应宽度
 6. 镜像源配置文件支持自定义，默认使用国内优化源
