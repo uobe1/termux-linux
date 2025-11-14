@@ -1,1 +1,1 @@
-/root/TermuxForLinux/target/release/termux-linux-install: /root/TermuxForLinux/src/distro.rs /root/TermuxForLinux/src/main.rs /root/TermuxForLinux/src/utils.rs
+/root/TermuxForLinux/target/release/termux-linux-install: /root/TermuxForLinux/src/cli.rs /root/TermuxForLinux/src/config.rs /root/TermuxForLinux/src/distro.rs /root/TermuxForLinux/src/installer.rs /root/TermuxForLinux/src/main.rs /root/TermuxForLinux/src/system.rs /root/TermuxForLinux/src/ui.rs /root/TermuxForLinux/src/utils.rs

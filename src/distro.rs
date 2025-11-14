@@ -181,7 +181,8 @@ impl LinuxDistro {
         
         println!("\n正在创建元数据");
         let mut meta = SystemMeta::new(system_name.clone(), config.os_name.to_lowercase());
-        let mirror_url = get_mirror_for_distro(&config.os_name.to_lowercase())?;
+        let config_manager = crate::config::ConfigManager::new()?;
+        let mirror_url = config_manager.get_mirror_for_distro(&config.os_name.to_lowercase())?;
         meta.mirror_url = Some(mirror_url.clone());
         let meta_content = meta.to_string();
         fs::write(install_dir.join("meta.txt"), meta_content)?;
