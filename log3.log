@@ -1,0 +1,41 @@
+  _____
+ |_   _|__ _ __ _ __ ___  _   ___  __
+   | |/ _ \ '__| '_ ` _ \| | | \/ /
+   | |  __/ |  | | | | | | |_| |>  <
+   |_|\___|_|  |_| |_| |_|\__,_|_/\_\
+
+
+ 1. 安装系统         2. 卸载系统
+ 3. 查询已安装系统   4. 退出脚本
+
+
+请选择要执行的操作: 1
+请选择要安装的Linux发行版:
+ 1. Ubuntu
+ 2. Kali
+ 3. Debian
+ 4. CentOS
+ 5. Fedora
+请选择: 3
+请输入系统名称 (留空使用默认): 测试
+请选择安装模式:
+ 1. 最小化安装
+ 2. 标准安装
+ 3. 自定义安装
+请选择: 3
+已安装的系统: ["debian1", "debian2"]
+基础名称: debian
+尝试实例ID: debian1
+尝试实例ID: debian2
+尝试实例ID: debian3
+找到可用的实例ID: debian3
+生成的实例ID: debian3
+系统名称: 测试
+
+正在从码云下载 Rootfs 镜像文件，请耐心等待
+
+正在解压镜像 请耐心等待
+安装目录: "/data/data/com.termux/files/home/Ostermux/debian4"
+文件系统目录: "/data/data/com.termux/files/home/Ostermux/debian4/filesys"
+执行解压命令: tar -xJf termux-debian/debian-rootfs-arm64.tar.xz -C /data/data/com.termux/files/home/Ostermux/debian4/filesys
+Error: "命令执行失败: tar -xJf termux-debian/debian-rootfs-arm64.tar.xz -C /data/data/com.termux/files/home/Ostermux/debian4/filesys\nstdout: \nstderr: tar: ./usr/bin/perl: Cannot hard link to ‘./usr/bin/perl5.28.1’: Permission denied\ntar: ./usr/bin/uncompress: Cannot hard link to ‘./usr/bin/gunzip’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/r600_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/kgsl_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/imx-drm_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/vc4_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/kms_swrast_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/swrast_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/msm_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/r300_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/nouveau_vieux_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/r200_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/virtio_gpu_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/etnaviv_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/radeonsi_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/radeon_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/r200_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/nouveau_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: ./usr/lib/aarch64-linux-gnu/dri/tegra_dri.so: Cannot hard link to ‘./usr/lib/aarch64-linux-gnu/dri/v3d_dri.so’: Permission denied\ntar: Exiting with failure status due to previous errors\n"
