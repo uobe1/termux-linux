@@ -114,6 +114,7 @@ impl LinuxDistro {
         }
     }
     
+    #[allow(dead_code)]
     pub fn new_with_instance(distro_type: DistroType, instance_id: String, custom_name: Option<String>) -> Self {
         Self { 
             distro_type,
@@ -176,15 +177,18 @@ impl LinuxDistro {
         }
         
         let extract_cmd = if config.exclude_dev {
-            format!("tar -xf {} -C {} --exclude=\"dev\" --no-same-owner", 
-                    tarball_path.display(), filesys_dir.display())
+            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xf {} --exclude='dev' 2>&1 | grep -v \"/linkerconfig/\" >&2", 
+                    filesys_dir.display(), tarball_path.display())
         } else {
-            format!("tar -xJf {} -C {} --no-same-owner", 
-                    tarball_path.display(), filesys_dir.display())
+            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xf {} 2>&1 | grep -v \"/linkerconfig/\" >&2", 
+                    filesys_dir.display(), tarball_path.display())
         };
         
         println!("执行解压命令: {}", extract_cmd);
-        run_command(&extract_cmd)?;
+        
+        // 使用 bash -c 来执行管道命令
+        let full_cmd = format!("bash -c '{}'", extract_cmd);
+        run_command(&full_cmd)?;
         
         // 检查解压是否成功
         if !filesys_dir.join("bin").exists() {
@@ -253,6 +257,7 @@ impl LinuxDistro {
         Ok(instance_id)
     }
     
+    #[allow(dead_code)]
     pub fn uninstall(&self) -> Result<(), Box<dyn std::error::Error>> {
         let config = self.get_config();
         
@@ -333,6 +338,7 @@ impl LinuxDistro {
         }
     }
     
+    #[allow(dead_code)]
     fn setup_system(&self, config: &DistroConfig) -> Result<(), Box<dyn std::error::Error>> {
         let home = get_home_dir()?;
         let install_dir = home.join("Ostermux").join(&config.os_name);
@@ -538,6 +544,7 @@ impl LinuxDistro {
     }
 }
 
+#[allow(dead_code)]
 struct DistroConfig {
     os_name: String,
     folder_name: String,
