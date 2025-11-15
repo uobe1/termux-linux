@@ -1,3 +1,22 @@
+<!-- OPENSPEC:START -->
+# OpenSpec Instructions
+
+These instructions are for AI assistants working in this project.
+
+Always open `@/openspec/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
+
+Use `@/openspec/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+
+Keep this managed block so 'openspec update' can refresh the instructions.
+
+<!-- OPENSPEC:END -->
+
 # TermuxForLinux 项目
 
 ## 项目概述
@@ -290,15 +309,13 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 7. 首次运行会自动创建 `$HOME/Ostermux/config` 配置文件
 8. 旧版 `mirror.conf` 配置文件已不再使用
 9. 自定义下载链接失效时会自动回退到默认源
-10. 解压过程使用 `--no-same-owner` 参数避免权限问题
 
 ## 版本更新记录
 
 ### v0.1.0 (当前版本)
-- ✅ 修改配置文件读取机制，从 `mirrors.conf` 改为 `config`
+- ✅ 修改配置文件读取机制，从 `mirror.conf` 改为 `config`
 - ✅ 添加自定义下载链接功能，支持 `{distro}-link` 配置
 - ✅ 优化实例ID生成逻辑，使用正则匹配代替遍历
-- ✅ 修复tar解压权限问题，添加 `--no-same-owner` 参数
 - ✅ 完善错误处理和自动回退机制
 - ✅ 首次运行自动创建默认配置文件
 

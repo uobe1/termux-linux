@@ -309,15 +309,13 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 7. 首次运行会自动创建 `$HOME/Ostermux/config` 配置文件
 8. 旧版 `mirror.conf` 配置文件已不再使用
 9. 自定义下载链接失效时会自动回退到默认源
-10. 解压过程使用 `--no-same-owner` 参数避免权限问题
 
 ## 版本更新记录
 
 ### v0.1.0 (当前版本)
-- ✅ 修改配置文件读取机制，从 `mirrors.conf` 改为 `config`
+- ✅ 修改配置文件读取机制，从 `mirror.conf` 改为 `config`
 - ✅ 添加自定义下载链接功能，支持 `{distro}-link` 配置
 - ✅ 优化实例ID生成逻辑，使用正则匹配代替遍历
-- ✅ 修复tar解压权限问题，添加 `--no-same-owner` 参数
 - ✅ 完善错误处理和自动回退机制
 - ✅ 首次运行自动创建默认配置文件
 
