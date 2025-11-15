@@ -132,13 +132,23 @@ impl LinuxDistro {
         println!("生成的实例ID: {}", instance_id);
         println!("系统名称: {}", system_name);
         
-        println!("\n正在从码云下载 Rootfs 镜像文件，请耐心等待");
+        // 检查是否有自定义下载链接
+        let config_manager = crate::config::ConfigManager::new()?;
+        let custom_link = config_manager.get_download_link_for_distro(&config.os_name.to_lowercase())?;
         
-        // 检查镜像目录是否已存在
-        if PathBuf::from(&config.image_dir).exists() {
-            println!("镜像目录已存在，跳过下载");
+        let use_custom_link = custom_link.is_some();
+        
+        if let Some(link) = &custom_link {
+            println!("\n正在从自定义链接下载 Rootfs 镜像文件，请耐心等待");
+            self.download_from_custom_link(link, &config.tarball)?;
         } else {
-            run_command(&format!("git clone \"{}\"", config.repo_url))?;
+            println!("\n正在从码云下载 Rootfs 镜像文件，请耐心等待");
+            // 检查镜像目录是否已存在
+            if PathBuf::from(&config.image_dir).exists() {
+                println!("镜像目录已存在，跳过下载");
+            } else {
+                run_command(&format!("git clone \"{}\"", config.repo_url))?;
+            }
         }
         
         println!("\n正在解压镜像 请耐心等待");
@@ -155,17 +165,22 @@ impl LinuxDistro {
         }
         
         // 检查镜像文件是否存在
-        let tarball_path = PathBuf::from(&config.image_dir).join(&config.tarball);
+        let tarball_path = if use_custom_link {
+            PathBuf::from(&config.tarball)
+        } else {
+            PathBuf::from(&config.image_dir).join(&config.tarball)
+        };
+        
         if !tarball_path.exists() {
             return Err(format!("镜像文件不存在: {:?}", tarball_path).into());
         }
         
         let extract_cmd = if config.exclude_dev {
-            format!("tar -xf {}/{} -C {} --exclude=\"dev\"", 
-                    config.image_dir, config.tarball, filesys_dir.display())
+            format!("tar -xf {} -C {} --exclude=\"dev\" --no-same-owner", 
+                    tarball_path.display(), filesys_dir.display())
         } else {
-            format!("tar -xJf {}/{} -C {}", 
-                    config.image_dir, config.tarball, filesys_dir.display())
+            format!("tar -xJf {} -C {} --no-same-owner", 
+                    tarball_path.display(), filesys_dir.display())
         };
         
         println!("执行解压命令: {}", extract_cmd);
@@ -177,11 +192,14 @@ impl LinuxDistro {
         }
         
         println!("\n解压完成 正在删除已下载的镜像");
-        run_command(&format!("rm -rf {}", config.image_dir))?;
+        if use_custom_link {
+            run_command(&format!("rm -rf {}", config.tarball))?;
+        } else {
+            run_command(&format!("rm -rf {}", config.image_dir))?;
+        }
         
         println!("\n正在创建元数据");
         let mut meta = SystemMeta::new(system_name.clone(), config.os_name.to_lowercase());
-        let config_manager = crate::config::ConfigManager::new()?;
         let mirror_url = config_manager.get_mirror_for_distro(&config.os_name.to_lowercase())?;
         meta.mirror_url = Some(mirror_url.clone());
         let meta_content = meta.to_string();
@@ -205,20 +223,34 @@ impl LinuxDistro {
         }
         
         let installed_systems = get_installed_systems()?;
-        println!("已安装的系统: {:?}", installed_systems);
         let base_name = self.distro_type.to_string().to_lowercase();
-        println!("基础名称: {}", base_name);
-        let mut counter = 1;
         
-        loop {
-            let instance_id = format!("{}{}", base_name, counter);
-            println!("尝试实例ID: {}", instance_id);
-            if !installed_systems.contains(&instance_id) {
-                println!("找到可用的实例ID: {}", instance_id);
-                return Ok(instance_id);
+        // 使用正则表达式找出同类型系统的最大数字后缀
+        use std::collections::HashSet;
+        let mut numbers = HashSet::new();
+        
+        for system in &installed_systems {
+            if system.starts_with(&base_name) {
+                if let Some(num_str) = system.strip_prefix(&base_name) {
+                    if let Ok(num) = num_str.parse::<u32>() {
+                        numbers.insert(num);
+                    }
+                }
             }
-            counter += 1;
         }
+        
+        // 找到最大的数字，然后+1
+        let mut max_num = 0;
+        for num in &numbers {
+            if *num > max_num {
+                max_num = *num;
+            }
+        }
+        
+        let instance_id = format!("{}{}", base_name, max_num + 1);
+        println!("生成的实例ID: {}", instance_id);
+        
+        Ok(instance_id)
     }
     
     pub fn uninstall(&self) -> Result<(), Box<dyn std::error::Error>> {
@@ -453,7 +485,7 @@ impl LinuxDistro {
         Ok(())
     }
     
-    fn generate_start_script(&self, config: &DistroConfig, filesys_dir: &PathBuf) -> Result<String, Box<dyn std::error::Error>> {
+    fn generate_start_script(&self, _config: &DistroConfig, _filesys_dir: &PathBuf) -> Result<String, Box<dyn std::error::Error>> {
         let script = r#"#!/data/data/com.termux/files/usr/bin/bash
 cd $(dirname $0)
 ## unset LD_PRELOAD in case termux-exec is installed
@@ -489,6 +521,20 @@ else
 fi
 "#;
         Ok(script.to_string())
+    }
+}
+
+impl LinuxDistro {
+    fn download_from_custom_link(&self, link: &str, tarball: &str) -> Result<(), Box<dyn std::error::Error>> {
+        println!("正在下载: {}", link);
+        run_command(&format!("wget -O {} {}", tarball, link))?;
+        
+        // 检查下载是否成功
+        if !PathBuf::from(tarball).exists() {
+            return Err("下载失败：文件不存在".into());
+        }
+        
+        Ok(())
     }
 }
 

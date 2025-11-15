@@ -90,7 +90,7 @@ fn handle_command_line_args(args: &[String]) -> Result<(), Box<dyn std::error::E
             };
             
             let mut name = None;
-            let mut minimal = false;
+            let mut _minimal = false;
             
             for i in 3..args.len() {
                 match args[i].as_str() {
@@ -100,7 +100,7 @@ fn handle_command_line_args(args: &[String]) -> Result<(), Box<dyn std::error::E
                         }
                     }
                     "--minimal" => {
-                        minimal = true;
+                        _minimal = true;
                     }
                     _ => {}
                 }
