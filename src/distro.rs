@@ -177,10 +177,10 @@ impl LinuxDistro {
         }
         
         let extract_cmd = if config.exclude_dev {
-            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xf {} --exclude='dev' 2>&1 | grep -v \"/linkerconfig/\" >&2", 
+            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xJf {} --exclude='dev' 2>&1 | grep -v \"/linkerconfig/\" >&2", 
                     filesys_dir.display(), tarball_path.display())
         } else {
-            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xf {} 2>&1 | grep -v \"/linkerconfig/\" >&2", 
+            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xJf {} 2>&1 | grep -v \"/linkerconfig/\" >&2", 
                     filesys_dir.display(), tarball_path.display())
         };
         
