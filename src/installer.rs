@@ -9,7 +9,7 @@ pub fn install_interactive() -> Result<(), Box<dyn std::error::Error>> {
     println!(" 4. CentOS");
     println!(" 5. Fedora");
     
-    print!("请选择: ");
+    print!("请输入数字以选择: ");
     io::stdout().flush().unwrap();
     
     let mut input = String::new();
@@ -63,7 +63,7 @@ pub fn install_interactive() -> Result<(), Box<dyn std::error::Error>> {
             distro.install()?;
         }
         _ => {
-            println!("不合法的选择");
+            println!("不合法的选择！");
             return Ok(());
         }
     }

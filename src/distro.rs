@@ -143,7 +143,7 @@ impl LinuxDistro {
             println!("\n正在从自定义链接下载 Rootfs 镜像文件，请耐心等待");
             self.download_from_custom_link(link, &config.tarball)?;
         } else {
-            println!("\n正在从码云下载 Rootfs 镜像文件，请耐心等待");
+            println!("\n正在从默认链接下载 Rootfs 镜像文件，请耐心等待");
             // 检查镜像目录是否已存在
             if PathBuf::from(&config.image_dir).exists() {
                 println!("镜像目录已存在，跳过下载");
@@ -152,7 +152,7 @@ impl LinuxDistro {
             }
         }
         
-        println!("\n正在解压镜像 请耐心等待");
+        println!("\n正在解压镜像中...");
         let install_dir = get_home_dir()?.join("Ostermux").join(&instance_id);
         let filesys_dir = install_dir.join("filesys");
         fs::create_dir_all(&filesys_dir)?;
@@ -184,7 +184,7 @@ impl LinuxDistro {
                     tarball_path.display(), filesys_dir.display())
         };
 
-        println!("执行解压命令: {}", extract_cmd);
+        println!("DecompressCmd> {}", extract_cmd);
 
         run_command(&extract_cmd)?;
         
@@ -193,27 +193,27 @@ impl LinuxDistro {
             return Err("解压失败：未找到 bin 目录".into());
         }
         
-        println!("\n解压完成 正在删除已下载的镜像");
+        println!("\n解压完成，正在删除镜像...");
         if use_custom_link {
             run_command(&format!("rm -rf {}", config.tarball))?;
         } else {
             run_command(&format!("rm -rf {}", config.image_dir))?;
         }
         
-        println!("\n正在创建元数据");
+        println!("\n正在创建元数据...");
         let mut meta = SystemMeta::new(system_name.clone(), config.os_name.to_lowercase());
         let mirror_url = config_manager.get_mirror_for_distro(&config.os_name.to_lowercase())?;
         meta.mirror_url = Some(mirror_url.clone());
         let meta_content = meta.to_string();
         fs::write(install_dir.join("meta.txt"), meta_content)?;
         
-        println!("\n正在优化系统设置");
+        println!("\n正在优化系统设置...");
         self.setup_system_new(&config, &install_dir, &filesys_dir)?;
         
         run_command(&format!("screenfetch -A \"{}\" -L", config.screenfetch_name))?;
         
         println!("\n   {} (ID: {}) 安装成功", system_name, instance_id);
-        println!("\n    祝您使用愉快\n");
+        println!("\n    祝您使用愉快！\n");
         
         Ok(())
     }

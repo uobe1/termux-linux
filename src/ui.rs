@@ -9,7 +9,7 @@ pub fn get_terminal_width() -> usize {
 
 pub fn display_system_list(metas: &[(String, SystemMeta)]) -> Result<(), Box<dyn std::error::Error>> {
     if metas.is_empty() {
-        println!("暂没有安装系统哦 赶紧来体验一下吧");
+        println!("这里没有任何东西...");
         return Ok(());
     }
     
