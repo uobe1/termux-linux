@@ -1,4 +1,4 @@
 target/
-proot-distro/
+proot-distro*/
 termux-install-linux-old/
-termux-*/
+termux*/
