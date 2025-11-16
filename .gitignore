@@ -2,3 +2,6 @@ target/
 proot-distro*/
 termux-install-linux-old/
 termux*/
+openspec/
+AGENTS.md
+CLAUDE.md
