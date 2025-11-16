@@ -1,22 +1,3 @@
-<!-- OPENSPEC:START -->
-# OpenSpec Instructions
-
-These instructions are for AI assistants working in this project.
-
-Always open `@/openspec/AGENTS.md` when the request:
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
-
 # TermuxForLinux 项目
 
 ## 项目概述
@@ -33,7 +14,6 @@ TermuxForLinux 是一个用于在 Android Termux 环境中安装和运行多种 
 ├── .gitignore               # Git 忽略文件
 ├── README.md                # 说明文档
 ├── IFLOW.md                 # 项目文档
-├── mirror.conf             # 旧版镜像源配置文件（已废弃）
 ├── tmp.md                   # 临时开发文档
 ├── log[1-3].log            # 开发调试日志文件
 ├── src/                     # Rust 源代码目录
@@ -82,7 +62,7 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 └── kali1/
     ├── start.sh
     ├── meta.txt
-    └── filesys/
+│   └── filesys/
 ```
 
 ### 🆕 美化系统列表
@@ -96,7 +76,7 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 - 保留友好的交互式界面
 
 ### 🆕 配置文件换源
-- 通过 `config` 统一管理镜像源（替代旧的 `mirror.conf`）
+- 通过 `config` 统一管理镜像源
 - 支持自定义镜像源URL
 - 针对中国网络环境优化
 - 首次运行自动创建默认配置文件
@@ -116,7 +96,7 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 
 ### 1. 主程序
 
-#### Ostermux-install
+#### termux-linux-install
 - **全新架构**: 支持多系统并行管理
 - **命令行支持**: 完整的CLI参数支持
 - **交互式界面**: 简化的4选项主菜单
@@ -129,22 +109,22 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 
 ```bash
 # 交互式界面
-./Ostermux-install
+./termux-linux-install
 
 # 列出已安装系统
-./Ostermux-install --list
+./termux-linux-install --list
 
 # 安装指定发行版
-./Ostermux-install --install ubuntu --name "开发环境"
+./termux-linux-install --install ubuntu --name "开发环境"
 
 # 最小化安装
-./Ostermux-install --install debian --minimal
+./termux-linux-install --install debian --minimal
 
 # 卸载指定系统
-./Ostermux-install --uninstall debian1
+./termux-linux-install --uninstall debian1
 
 # 显示帮助
-./Ostermux-install --help
+./termux-linux-install --help
 ```
 
 ### 3. 启动脚本
@@ -238,7 +218,7 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 **注意**：
 - 首次运行程序会自动创建默认配置文件
 - 配置文件位置：`$HOME/Ostermux/config`
-- 旧版 `mirror.conf` 已不再使用
+- 旧版 `mirror.conf` 配置文件已不再使用
 
 ## 技术实现
 
@@ -307,15 +287,12 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 5. 支持小屏幕终端操作，界面自适应宽度
 6. 配置文件支持自定义，默认使用国内优化源
 7. 首次运行会自动创建 `$HOME/Ostermux/config` 配置文件
-8. 旧版 `mirror.conf` 配置文件已不再使用
-9. 自定义下载链接失效时会自动回退到默认源
+8. 自定义下载链接失效时会自动回退到默认源
 
 ## 版本更新记录
 
-### v0.1.0 (当前版本)
-- ✅ 修改配置文件读取机制，从 `mirror.conf` 改为 `config`
-- ✅ 添加自定义下载链接功能，支持 `{distro}-link` 配置
-- ✅ 优化实例ID生成逻辑，使用正则匹配代替遍历
-- ✅ 完善错误处理和自动回退机制
-- ✅ 首次运行自动创建默认配置文件
-
+### v0.1.1 (当前版本)
+- ✅ 修复Termux中硬链接解压问题，使用 `proot --link2symlink`
+- ✅ 参考proot-distro项目实现，添加 `--delay-directory-restore` 和 `--preserve-permissions` 选项
+- ✅ 添加 `--exclude='dev'` 排除设备文件
+- ✅ 修复所有编译警告，优化代码质量

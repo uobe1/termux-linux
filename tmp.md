@@ -1,9 +1,4 @@
 ## 修改内容
-- **1**: 修复问题,
-  通过log[1-3,0].log针对性修复Termux中硬链接问题
-  允许联网搜索或者参考proot-distro项目(已提供proot-distro项目目录proot-distro/)
-- **2**: 编写文档,
-  通过编写spec文档明确OS镜像包内容/制作, 依赖项, 构建, 测试 流程
 
 ## 实现步骤
 - **0**: git add . && git coomit -m "task:start"
