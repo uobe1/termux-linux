@@ -177,18 +177,16 @@ impl LinuxDistro {
         }
         
         let extract_cmd = if config.exclude_dev {
-            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xJf {} --exclude='dev' 2>&1 | grep -v \"/linkerconfig/\" >&2", 
-                    filesys_dir.display(), tarball_path.display())
+            format!("proot --link2symlink tar -xJf {} -C {} --exclude=dev ||:",
+                    tarball_path.display(), filesys_dir.display())
         } else {
-            format!("proot --link2symlink tar -C {} --warning=no-unknown-keyword --delay-directory-restore --preserve-permissions --strip=1 -xJf {} 2>&1 | grep -v \"/linkerconfig/\" >&2", 
-                    filesys_dir.display(), tarball_path.display())
+            format!("proot --link2symlink tar -xJf {} -C {} ||:",
+                    tarball_path.display(), filesys_dir.display())
         };
-        
+
         println!("执行解压命令: {}", extract_cmd);
-        
-        // 使用 bash -c 来执行管道命令
-        let full_cmd = format!("bash -c '{}'", extract_cmd);
-        run_command(&full_cmd)?;
+
+        run_command(&extract_cmd)?;
         
         // 检查解压是否成功
         if !filesys_dir.join("bin").exists() {
