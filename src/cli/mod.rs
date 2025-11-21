@@ -10,47 +10,48 @@ use crate::utils::get_system_metas;
 use crate::installer::install_interactive;
 use crate::system::uninstall_system_by_id;
 use crate::ui::display_system_list;
+use crate::i18n::Translator;
 
-pub fn run_cli() -> Result<(), Box<dyn std::error::Error>> {
+pub fn run_cli(translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     
     if args.len() > 1 {
-        return handle_command_line_args(&args);
+        return handle_command_line_args(&args, translator);
     }
     
-    check_and_install_screenfetch()?;
+    check_and_install_screenfetch(translator)?;
     
     loop {
-        interactive::display_logo();
+        interactive::display_logo(translator);
         let installed_systems = crate::utils::get_installed_systems()?;
-        let choice = interactive::get_user_choice()?;
+        let choice = interactive::get_user_choice(translator)?;
         
         match choice {
-            1 => install_interactive()?,
-            2 => interactive::uninstall_interactive(&installed_systems)?,
+            1 => install_interactive(translator)?,
+            2 => interactive::uninstall_interactive(&installed_systems, translator)?,
             3 => {
                 let metas = get_system_metas()?;
-                display_system_list(&metas)?;
+                display_system_list(&metas, translator)?;
             }
             4 => {
-                println!("\n  退出程序\n");
+                println!("\n  {}\n", translator.t("exiting_program"));
                 std::process::exit(0);
             }
-            _ => println!("\n  不合法的输入选项\n"),
+            _ => println!("\n  {}\n", translator.t("invalid_choice_menu")),
         }
         
-        println!("\n  按 Enter 键继续...");
+        println!("\n  {}", translator.t("press_enter"));
         let _ = io::stdin().read_line(&mut String::new());
     }
 }
 
-fn check_and_install_screenfetch() -> Result<(), Box<dyn std::error::Error>> {
+fn check_and_install_screenfetch(translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
     let output = Command::new("pkg")
         .args(&["list-installed"])
         .output()?;
     
     if !String::from_utf8_lossy(&output.stdout).contains("screenfetch") {
-        crate::ui::print_info("正在安装相关依赖包: screenfetch");
+        crate::ui::print_info(&translator.t_fmt("installing_package", &["screenfetch"]));
         Command::new("pkg")
             .args(&["install", "screenfetch", "-y"])
             .spawn()?

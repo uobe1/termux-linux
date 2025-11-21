@@ -6,6 +6,7 @@ authors = ["Your Name <your.email@example.com>"]
 description = "A Rust port of TermuxForLinux - Install and run Linux distributions in Termux"
 
 [dependencies]
+toml = "0.8"
 
 [profile.release]
 lto = true

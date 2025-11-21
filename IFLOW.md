@@ -22,6 +22,9 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 ## RuleF
 - 使用中文交流沟通
 - 禁止未经用户同意并双重确认的Agent调用
+
+## OpenSpecB
+- 当完成开发后**MUST**更新task.md
 <!-- SPEC2025:END -->
 # TermuxForLinux 项目
 
