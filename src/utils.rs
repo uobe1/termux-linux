@@ -13,7 +13,7 @@ pub fn get_home_dir() -> Result<PathBuf, Box<dyn std::error::Error>> {
 
 pub fn get_installed_systems() -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let home = get_home_dir()?;
-    let ostermux_dir = home.join("Ostermux");
+    let ostermux_dir = home.join("termos");
     
     if !ostermux_dir.exists() {
         fs::create_dir_all(&ostermux_dir)?;
@@ -44,7 +44,7 @@ pub fn get_system_metas() -> Result<Vec<(String, SystemMeta)>, Box<dyn std::erro
     
     for system_id in systems {
         let home = get_home_dir()?;
-        let meta_path = home.join("Ostermux").join(&system_id).join("meta.txt");
+        let meta_path = home.join("termos").join(&system_id).join("meta.txt");
         
         if meta_path.exists() {
             let content = fs::read_to_string(&meta_path)?;

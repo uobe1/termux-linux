@@ -7,6 +7,7 @@ Always open `@/openspec/AGENTS.md` when the request:
 - Mentions planning or proposals (words like proposal, spec, change, plan)
 - Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
 - Sounds ambiguous and you need the authoritative spec before coding
+- When synchronizing the proposal completion status with `task.md`
 
 Use `@/openspec/AGENTS.md` to learn:
 - How to create and apply change proposals
@@ -16,6 +17,12 @@ Use `@/openspec/AGENTS.md` to learn:
 Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
+<!-- SPEC2025 -->
+# Spec 2025
+## RuleF
+- 使用中文交流沟通
+- 禁止未经用户同意并双重确认的Agent调用
+<!-- SPEC2025:END -->
 # TermuxForLinux 项目
 
 ## 项目概述

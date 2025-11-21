@@ -1,6 +1,6 @@
 [package]
-name = "termux-linux-install"
-version = "0.1.0"
+name = "insOs"
+version = "0.2.0"
 edition = "2021"
 authors = ["Your Name <your.email@example.com>"]
 description = "A Rust port of TermuxForLinux - Install and run Linux distributions in Termux"

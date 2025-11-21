@@ -7,7 +7,7 @@ pub fn uninstall_system_by_id(system_id: &str) -> Result<(), Box<dyn std::error:
     println!("\n正在卸载 {}", system_id);
     
     let home = get_home_dir()?;
-    let system_dir = home.join("Ostermux").join(system_id);
+    let system_dir = home.join("termos").join(system_id);
     
     if system_dir.exists() {
         run_command(&format!("chmod 777 -R {}", system_dir.display()))?;
@@ -29,7 +29,7 @@ impl SystemManager {
     #[allow(dead_code)]
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         let home = get_home_dir()?;
-        let base_dir = home.join("Ostermux");
+        let base_dir = home.join("termos");
         Ok(Self { base_dir })
     }
     

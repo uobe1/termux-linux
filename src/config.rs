@@ -11,7 +11,7 @@ pub struct ConfigManager {
 impl ConfigManager {
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         let home = get_home_dir()?;
-        let config_dir = home.join("Ostermux");
+        let config_dir = home.join("termos");
         
         // 确保配置目录存在
         if !config_dir.exists() {

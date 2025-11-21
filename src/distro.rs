@@ -155,7 +155,7 @@ impl LinuxDistro {
         }
         
         println!("\n  正在解压镜像...");
-        let install_dir = get_home_dir()?.join("Ostermux").join(&instance_id);
+        let install_dir = get_home_dir()?.join("termos").join(&instance_id);
         let filesys_dir = install_dir.join("filesys");
         fs::create_dir_all(&filesys_dir)?;
         
@@ -214,7 +214,7 @@ impl LinuxDistro {
         
         println!("\n  ✓ {} 安装成功！", system_name);
         println!("\n  系统ID: {}", instance_id);
-        println!("  启动命令: cd $HOME/Ostermux/{instance_id} && ./start.sh");
+        println!("  启动命令: cd $HOME/termos/{instance_id} && ./start.sh");
         println!("\n  祝您使用愉快！\n");
         
         Ok(())
