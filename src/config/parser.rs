@@ -2,6 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::collections::HashMap;
 use crate::utils::fs::get_home_dir;
+use crate::config::defaults::get_default_mirror;
 
 pub struct ConfigManager {
     config_dir: PathBuf,

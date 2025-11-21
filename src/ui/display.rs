@@ -1,4 +1,5 @@
 use crate::distro::SystemMeta;
+use crate::i18n::Translator;
 
 pub fn get_terminal_width() -> usize {
     match std::env::var("COLUMNS") {
@@ -7,21 +8,27 @@ pub fn get_terminal_width() -> usize {
     }
 }
 
-pub fn display_system_list(metas: &[(String, SystemMeta)]) -> Result<(), Box<dyn std::error::Error>> {
+pub fn display_system_list(metas: &[(String, SystemMeta)], translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
     if metas.is_empty() {
-        println!("\n[ 这里没有任何系统... ]\n");
+        println!("\n[ {} ]\n", translator.t("no_systems_here"));
         return Ok(());
     }
     
-    println!("\n已安装系统:\n");
+    println!("\n{}\n", translator.t("installed_systems_header"));
     
     for (system_id, meta) in metas {
         println!("  {}  ", meta.name);
         println!("  ──────────────────────────────────");
         
-        let date = meta.created_at.split('T').next().unwrap_or("未知");
-        println!("  系统ID: {}    创建时间: {}", system_id, date);
-        println!("  用户组: {}    权限: {}", meta.user_group, meta.permissions);
+        let unknown_date = translator.t("unknown_date");
+        let date = meta.created_at.split('T').next().unwrap_or(&unknown_date);
+        let system_id_label = translator.t("system_id_label");
+        let created_at_label = translator.t("created_at_label");
+        let user_group_label = translator.t("user_group_label");
+        let permissions_label = translator.t("permissions_label");
+        println!("  {}: {}    {}: {}", system_id_label, system_id, created_at_label, date);
+        println!("  {}: {}    {}: {}", user_group_label, meta.user_group, permissions_label, meta.permissions);
+        println!("  {}: {}    {}: {}", translator.t("user_group_label"), meta.user_group, translator.t("permissions_label"), meta.permissions);
         
         println!();
     }

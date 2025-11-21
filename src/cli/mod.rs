@@ -28,7 +28,11 @@ pub fn run_cli(translator: &Translator) -> Result<(), Box<dyn std::error::Error>
         
         match choice {
             1 => install_interactive(translator)?,
-            2 => interactive::uninstall_interactive(&installed_systems, translator)?,
+            2 => {
+                let index = (choice - 1) as usize;
+                crate::system::uninstall_system_by_id(&installed_systems[index], translator)?;
+                crate::ui::print_success(&translator.t("uninstall_complete"));
+            }
             3 => {
                 let metas = get_system_metas()?;
                 display_system_list(&metas, translator)?;

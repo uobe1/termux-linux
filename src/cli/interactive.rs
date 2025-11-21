@@ -36,7 +36,7 @@ pub fn uninstall_interactive(installed_systems: &[String], translator: &Translat
         return Ok(());
     }
     
-    print_section(translator.t("select_system_to_uninstall"));
+    print_section(&translator.t("select_system_to_uninstall"));
     
     for (i, system) in installed_systems.iter().enumerate() {
         print_item(&format!("{}.", i + 1), system);
@@ -52,8 +52,8 @@ pub fn uninstall_interactive(installed_systems: &[String], translator: &Translat
         if choice > 0 && choice <= installed_systems.len() {
             let system_id = &installed_systems[choice - 1];
             print_info(&translator.t_fmt("uninstalling_system", &[system_id]));
-            crate::system::uninstall_system_by_id(system_id)?;
-            print_success(translator.t("uninstall_complete"));
+            crate::system::uninstall_system_by_id(system_id, translator)?;
+            print_success(&translator.t("uninstall_complete"));
         } else {
             println!("\n  {}\n", translator.t("invalid_selection"));
         }

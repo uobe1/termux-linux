@@ -2,17 +2,18 @@ use std::env;
 use crate::distro::{LinuxDistro, DistroType};
 use crate::system::uninstall_system_by_id;
 use crate::ui::{print_info, print_success};
+use crate::i18n::Translator;
 
-pub fn handle_command_line_args(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
+pub fn handle_command_line_args(args: &[String], translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
     match args[1].as_str() {
         "--list" => {
             let metas = crate::utils::get_system_metas()?;
-            crate::ui::display_system_list(&metas)?;
+            crate::ui::display_system_list(&metas, translator)?;
         }
         "--install" => {
             if args.len() < 3 {
-                println!("\n  错误: 请指定要安装的发行版\n");
-                println!("  用法: {} --install <发行版> [选项]\n", args[0]);
+                println!("\n  {}\n", translator.t("error_specify_distro"));
+                println!("  {}\n", translator.t_fmt("usage_install", &[&args[0]]));
                 return Ok(());
             }
             
@@ -23,7 +24,7 @@ pub fn handle_command_line_args(args: &[String]) -> Result<(), Box<dyn std::erro
                 "centos" => DistroType::CentOS,
                 "fedora" => DistroType::Fedora,
                 _ => {
-                    println!("\n  错误: 不支持的发行版\n");
+                    println!("\n  {}\n", translator.t("error_unsupported_distro"));
                     return Ok(());
                 }
             };
@@ -51,49 +52,42 @@ pub fn handle_command_line_args(args: &[String]) -> Result<(), Box<dyn std::erro
                 LinuxDistro::new(distro_type)
             };
             
-            print_info(&format!("正在安装 {}", distro_type));
+            print_info(&translator.t_fmt("installing_package", &[&distro_type.to_string()]));
             distro.install()?;
-            print_success("安装完成");
+            print_success(&translator.t("installation_complete"));
         }
         "--uninstall" => {
             if args.len() < 3 {
-                println!("\n  错误: 请指定要卸载的系统ID\n");
-                println!("  用法: {} --uninstall <系统ID>\n", args[0]);
+                println!("\n  {}\n", translator.t("error_specify_system_id"));
+                println!("  {}\n", translator.t_fmt("usage_uninstall", &[&args[0]]));
                 return Ok(());
             }
             
-            print_info(&format!("正在卸载 {}", args[2]));
-            uninstall_system_by_id(&args[2])?;
-            print_success("卸载完成");
+            print_info(&translator.t_fmt("uninstalling_system", &[&args[2]]));
+            uninstall_system_by_id(&args[2], translator)?;
+            print_success(&translator.t("uninstall_complete"));
         }
         "--help" => {
-            display_help();
+            display_help(translator);
         }
         _ => {
-            println!("\n  未知参数: {}\n", args[1]);
-            display_help();
+            println!("\n  {}\n", translator.t_fmt("unknown_argument", &[&args[1]]));
+            display_help(translator);
         }
     }
     
     Ok(())
 }
 
-fn display_help() {
+fn display_help(translator: &Translator) {
     let program_name = env::args().next().unwrap_or_else(|| "insOs".to_string());
     
-    println!(r#"
-  用法:
-    {}                    # 交互式界面
-    {} --list             # 列出已安装系统
-    {} --install <distro> # 安装指定发行版
-    {} --uninstall <id>   # 卸载指定系统
-    {} --help             # 显示帮助
-  
-  支持的发行版: ubuntu, kali, debian, centos, fedora
-  
-  安装选项:
-    --name <名称>        # 自定义系统名称
-    --minimal           # 最小化安装
-  
-"#, program_name, program_name, program_name, program_name, program_name);
+    println!("\n  {}\n    {}", translator.t("usage_header"), translator.t_fmt("usage_interactive", &[&program_name]));
+    println!("    {}", translator.t_fmt("usage_list", &[&program_name]));
+    println!("    {}", translator.t_fmt("usage_install_cmd", &[&program_name]));
+    println!("    {}", translator.t_fmt("usage_uninstall_cmd", &[&program_name]));
+    println!("    {}\n", translator.t_fmt("usage_help", &[&program_name]));
+    println!("  {}\n", translator.t("supported_distros"));
+    println!("  {}\n    {}", translator.t("install_options"), translator.t("option_name"));
+    println!("    {}\n", translator.t("option_minimal"));
 }

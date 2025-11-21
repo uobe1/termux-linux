@@ -2,9 +2,10 @@ use std::fs;
 use std::path::PathBuf;
 use crate::utils::fs::get_home_dir;
 use crate::utils::cmd::run_command;
+use crate::i18n::Translator;
 
-pub fn uninstall_system_by_id(system_id: &str) -> Result<(), Box<dyn std::error::Error>> {
-    println!("\n正在卸载 {}", system_id);
+pub fn uninstall_system_by_id(system_id: &str, translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
+    println!("\n{}", translator.t_fmt("uninstalling_system", &[system_id]));
     
     let home = get_home_dir()?;
     let system_dir = home.join("termos").join(system_id);
@@ -12,9 +13,9 @@ pub fn uninstall_system_by_id(system_id: &str) -> Result<(), Box<dyn std::error:
     if system_dir.exists() {
         run_command(&format!("chmod 777 -R {}", system_dir.display()))?;
         run_command(&format!("rm -rf {}", system_dir.display()))?;
-        println!("\n卸载完成！");
+        println!("\n{}", &translator.t("uninstall_complete"));
     } else {
-        println!("系统 {} 不存在！", system_id);
+        println!("{}", translator.t_fmt("system_not_exist", &[system_id]));
     }
     
     Ok(())
