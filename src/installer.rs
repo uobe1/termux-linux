@@ -1,15 +1,16 @@
 use std::io::{self, Write};
 use crate::distro::{LinuxDistro, DistroType};
+use crate::ui::{print_section, print_item, print_info, print_success};
 
 pub fn install_interactive() -> Result<(), Box<dyn std::error::Error>> {
-    println!("请选择要安装的Linux发行版:");
-    println!(" 1. Ubuntu");
-    println!(" 2. Kali");
-    println!(" 3. Debian");
-    println!(" 4. CentOS");
-    println!(" 5. Fedora");
+    print_section("选择 Linux 发行版");
+    print_item("1.", "Ubuntu");
+    print_item("2.", "Kali");
+    print_item("3.", "Debian");
+    print_item("4.", "CentOS");
+    print_item("5.", "Fedora");
     
-    print!("请输入数字以选择: ");
+    print!("\n请输入数字以选择: ");
     io::stdout().flush().unwrap();
     
     let mut input = String::new();
@@ -22,24 +23,24 @@ pub fn install_interactive() -> Result<(), Box<dyn std::error::Error>> {
         Ok(4) => DistroType::CentOS,
         Ok(5) => DistroType::Fedora,
         _ => {
-            println!("不合法的选择");
+            println!("\n不合法的选择");
             return Ok(());
         }
     };
     
-    print!("请输入系统名称 (留空使用默认): ");
+    print!("\n请输入系统名称 (留空使用默认): ");
     io::stdout().flush().unwrap();
     
     let mut name_input = String::new();
     io::stdin().read_line(&mut name_input).unwrap();
     let name = if name_input.trim().is_empty() { None } else { Some(name_input.trim().to_string()) };
     
-    println!("请选择安装模式:");
-    println!(" 1. 最小化安装");
-    println!(" 2. 标准安装");
-    println!(" 3. 自定义安装");
+    print_section("选择安装模式");
+    print_item("1.", "最小化安装");
+    print_item("2.", "标准安装");
+    print_item("3.", "自定义安装");
     
-    print!("请选择: ");
+    print!("\n请选择: ");
     io::stdout().flush().unwrap();
     
     let mut mode_input = String::new();
@@ -52,6 +53,7 @@ pub fn install_interactive() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 LinuxDistro::new(distro_type)
             };
+            print_info("开始最小化安装...");
             distro.install()?;
         }
         Ok(2) | Ok(3) => {
@@ -60,13 +62,16 @@ pub fn install_interactive() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 LinuxDistro::new(distro_type)
             };
+            print_info("开始标准安装...");
             distro.install()?;
         }
         _ => {
-            println!("不合法的选择！");
+            println!("\n不合法的选择！");
             return Ok(());
         }
     }
+    
+    print_success("安装完成！");
     
     Ok(())
 }

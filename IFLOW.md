@@ -1,3 +1,21 @@
+<!-- OPENSPEC:START -->
+# OpenSpec Instructions
+
+These instructions are for AI assistants working in this project.
+
+Always open `@/openspec/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
+
+Use `@/openspec/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+
+Keep this managed block so 'openspec update' can refresh the instructions.
+
+<!-- OPENSPEC:END -->
 # TermuxForLinux 项目
 
 ## 项目概述
@@ -14,8 +32,12 @@ TermuxForLinux 是一个用于在 Android Termux 环境中安装和运行多种 
 ├── .gitignore               # Git 忽略文件
 ├── README.md                # 说明文档
 ├── IFLOW.md                 # 项目文档
-├── tmp.md                   # 临时开发文档
-├── log[1-3].log            # 开发调试日志文件
+├── openspec/                # OpenSpec 规范目录
+│   ├── AGENTS.md           # OpenSpec 代理指南
+│   ├── project.md          # 项目约定
+│   ├── specs/              # 当前规范
+│   └── changes/            # 变更提案
+│       └── enhance-ui-visuals/  # UI 增强提案
 ├── src/                     # Rust 源代码目录
 │   ├── main.rs              # 主程序入口
 │   ├── cli.rs               # 命令行参数处理和用户交互模块
@@ -32,66 +54,6 @@ TermuxForLinux 是一个用于在 Android Termux 环境中安装和运行多种 
     └── config               # 统一配置文件（首次运行自动创建）
 ```
 
-## 新版本特性
-
-### 🆕 多系统支持
-- 支持同一发行版的多个实例并行安装
-- 通过 `{DISTRO}{NUMBER}` 方式区分（如 `debian1`, `debian2`）
-- 每个系统独立运行，互不干扰
-
-### 🆕 自定义命名
-- 支持为每个系统自定义名称
-- 通过 `meta.txt` 文件管理系统元数据
-- 默认名称为系统ID（如 `debian1`），自定义安装可设置
-
-### 🆕 新目录结构
-```
-$HOME/Ostermux/            # 默认安装目录，自定义安装可设置
-├── debian1/
-│   ├── start.sh           # 统一启动脚本
-│   ├── meta.txt           # 系统元数据
-│   └── filesys/           # 文件系统目录
-│       ├── bin/
-│       ├── etc/
-│       ├── home/
-│       └── ...
-├── ubuntu1/
-│   ├── start.sh
-│   ├── meta.txt
-│   └── filesys/
-└── kali1/
-    ├── start.sh
-    ├── meta.txt
-│   └── filesys/
-```
-
-### 🆕 美化系统列表
-- 适配小屏幕终端的响应式显示
-- 显示系统名称、ID、创建时间、用户组、权限等信息
-- 清晰的边框和布局设计
-
-### 🆕 命令行支持
-- 完整的命令行参数支持
-- 支持批处理和脚本自动化
-- 保留友好的交互式界面
-
-### 🆕 配置文件换源
-- 通过 `config` 统一管理镜像源
-- 支持自定义镜像源URL
-- 针对中国网络环境优化
-- 首次运行自动创建默认配置文件
-
-### 🆕 自定义下载链接
-- 支持通过 `config` 文件配置自定义下载链接
-- 格式：`{distro}-link = {URL}`
-- 自动回退机制：自定义链接不可用时使用默认源
-- 支持所有主流发行版的自定义镜像
-
-### 🆕 优化的实例ID生成
-- 使用正则匹配代替遍历，提升性能
-- 智能识别现有系统ID，避免冲突
-- 支持快速生成连续的系统实例
-
 ## 核心功能
 
 ### 1. 主程序
@@ -104,6 +66,7 @@ $HOME/Ostermux/            # 默认安装目录，自定义安装可设置
 - **精细化安装**: 三种安装模式（最小化、标准、自定义）
 - **无外部依赖**: 仅使用Rust标准库
 - **小屏幕适配**: 优化移动终端显示效果
+- **进度反馈**: 安装过程显示实时进度条
 
 ### 2. 命令行接口
 
@@ -154,11 +117,11 @@ centos-mirror = https://mirrors.aliyun.com/centos/
 fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
 
 # 自定义下载链接配置（可选）
-ubuntu-link = https://custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
-debian-link = https://custom-mirror.com/debian-rootfs-arm64.tar.xz
-kali-link = https://custom-mirror.com/kali-rootfs-arm64.tar.xz
-centos-link = https://custom-mirror.com/centos-rootfs-arm64.tar.xz
-fedora-link = https://custom-mirror.com/fedora-rootfs-arm64.tar.xz
+# ubuntu-link = https://custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
+# debian-link = https://custom-mirror.com/debian-rootfs-arm64.tar.xz
+# kali-link = https://custom-mirror.com/kali-rootfs-arm64.tar.xz
+# centos-link = https://custom-mirror.com/centos-rootfs-arm64.tar.xz
+# fedora-link = https://custom-mirror.com/fedora-rootfs-arm64.tar.xz
 ```
 
 ## 使用方法
@@ -218,7 +181,6 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 **注意**：
 - 首次运行程序会自动创建默认配置文件
 - 配置文件位置：`$HOME/Ostermux/config`
-- 旧版 `mirror.conf` 配置文件已不再使用
 
 ## 技术实现
 
@@ -227,7 +189,7 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 - **元数据管理**: 通过 `meta.txt` 存储系统信息和配置
 - **响应式界面**: 自适应终端宽度的显示效果
 - **配置驱动**: 通过统一 `config` 文件管理镜像源和下载链接
-- **优化的ID生成**: 使用正则匹配算法快速生成唯一实例ID
+- **优化的ID生成**: 使用哈希集合快速生成唯一实例ID
 - **自动回退机制**: 自定义链接失效时自动使用默认下载源
 - **权限处理**: 解压时使用 `--no-same-owner` 参数避免权限问题
 
@@ -266,7 +228,7 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 - **installer.rs**: 系统安装流程、镜像下载、解压和配置
 - **system.rs**: 系统管理、卸载逻辑、系统实例管理
 - **config.rs**: 配置文件管理、镜像源配置
-- **ui.rs**: 用户界面显示、格式化输出、终端适配
+- **ui.rs**: 用户界面显示、格式化输出、终端适配、进度条组件
 - **错误处理**: 统一使用 `Result<T, E>` 类型
 - **代码风格**: 遵循 Rust 官方代码风格和命名约定
 
@@ -277,6 +239,46 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 3. **高内聚**: 相关功能集中在同一模块内
 4. **可扩展性**: 新功能可以通过添加新模块或扩展现有模块实现
 5. **可测试性**: 每个模块都可以独立测试
+
+## OpenSpec 工作流
+
+本项目使用 OpenSpec 进行规范驱动的开发：
+
+### 查看当前变更
+
+```bash
+# 列出活跃变更
+openspec list
+
+# 查看变更详情
+openspec show <change-id>
+```
+
+### 创建新变更
+
+```bash
+# 创建变更目录
+mkdir -p openspec/changes/<change-name>/specs/<capability>
+
+# 编写提案文件
+echo "## Why\n...\n\n## What Changes\n- ...\n\n## Impact\n- ..." > openspec/changes/<change-name>/proposal.md
+
+# 编写任务清单
+echo "## 1. Implementation\n- [ ] 1.1 ...\n- [ ] 1.2 ..." > openspec/changes/<change-name>/tasks.md
+
+# 编写规范变更
+echo "## ADDED Requirements\n### Requirement: ...\n..." > openspec/changes/<change-name>/specs/<capability>/spec.md
+
+# 验证变更
+openspec validate <change-name> --strict
+```
+
+### 应用变更
+
+```bash
+# 实现变更后归档
+openspec archive <change-name> --yes
+```
 
 ## 注意事项
 
@@ -296,3 +298,8 @@ ubuntu-link = https://your-custom-mirror.com/ubuntu-rootfs-arm64.tar.xz
 - ✅ 参考proot-distro项目实现，添加 `--delay-directory-restore` 和 `--preserve-permissions` 选项
 - ✅ 添加 `--exclude='dev'` 排除设备文件
 - ✅ 修复所有编译警告，优化代码质量
+
+### v0.1.2 (开发中)
+- 🔄 UI界面优化：移除边框，添加进度条
+- 🔄 改进文本排版和视觉层次
+- 🔄 增强用户操作反馈

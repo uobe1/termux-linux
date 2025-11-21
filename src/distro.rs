@@ -2,8 +2,11 @@ use std::fmt;
 use std::fs;
 use std::path::PathBuf;
 use std::collections::HashMap;
+use std::thread;
+use std::time::Duration;
 
 use crate::utils::*;
+use crate::ui::ProgressBar;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum DistroType {
@@ -38,7 +41,6 @@ pub struct SystemMeta {
 
 impl SystemMeta {
     pub fn new(name: String, os_type: String) -> Self {
-        // 使用标准库获取当前时间
         use std::time::{SystemTime, UNIX_EPOCH};
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -96,7 +98,6 @@ pub struct LinuxDistro {
     custom_name: Option<String>,
 }
 
-
 impl LinuxDistro {
     pub fn new(distro_type: DistroType) -> Self {
         Self { 
@@ -126,46 +127,38 @@ impl LinuxDistro {
     pub fn install(&self) -> Result<(), Box<dyn std::error::Error>> {
         let config = self.get_config();
         
-        // 生成实例ID和名称
         let instance_id = self.generate_instance_id()?;
         let system_name = self.custom_name.clone().unwrap_or_else(|| instance_id.clone());
         
-        println!("生成的实例ID: {}", instance_id);
-        println!("系统名称: {}", system_name);
+        println!("\n  系统名称: {}", system_name);
+        println!("  实例ID: {}", instance_id);
         
-        // 检查是否有自定义下载链接
         let config_manager = crate::config::ConfigManager::new()?;
         let custom_link = config_manager.get_download_link_for_distro(&config.os_name.to_lowercase())?;
         
         let use_custom_link = custom_link.is_some();
         
         if let Some(link) = &custom_link {
-            println!("\n正在从自定义链接下载 Rootfs 镜像文件，请耐心等待");
+            println!("\n  使用自定义镜像源");
             self.download_from_custom_link(link, &config.tarball)?;
         } else {
-            println!("\n正在从默认链接下载 Rootfs 镜像文件，请耐心等待");
-            // 检查镜像目录是否已存在
+            println!("\n  使用默认镜像源");
             if PathBuf::from(&config.image_dir).exists() {
-                println!("镜像目录已存在，跳过下载");
+                println!("  镜像目录已存在，跳过下载");
             } else {
+                let mut progress = ProgressBar::new(100, "正在克隆镜像仓库".to_string());
+                progress.update(10);
                 run_command(&format!("git clone \"{}\"", config.repo_url))?;
+                progress.update(100);
+                progress.finish();
             }
         }
         
-        println!("\n正在解压镜像中...");
+        println!("\n  正在解压镜像...");
         let install_dir = get_home_dir()?.join("Ostermux").join(&instance_id);
         let filesys_dir = install_dir.join("filesys");
         fs::create_dir_all(&filesys_dir)?;
         
-        println!("安装目录: {:?}", install_dir);
-        println!("文件系统目录: {:?}", filesys_dir);
-        
-        // 确保解压目录存在
-        if !filesys_dir.exists() {
-            fs::create_dir_all(&filesys_dir)?;
-        }
-        
-        // 检查镜像文件是否存在
         let tarball_path = if use_custom_link {
             PathBuf::from(&config.tarball)
         } else {
@@ -176,6 +169,9 @@ impl LinuxDistro {
             return Err(format!("镜像文件不存在: {:?}", tarball_path).into());
         }
         
+        let mut extract_progress = ProgressBar::new(100, "正在解压文件".to_string());
+        extract_progress.update(20);
+        
         let extract_cmd = if config.exclude_dev {
             format!("proot --link2symlink tar -xJf {} -C {} --exclude=dev ||:",
                     tarball_path.display(), filesys_dir.display())
@@ -183,51 +179,55 @@ impl LinuxDistro {
             format!("proot --link2symlink tar -xJf {} -C {} ||:",
                     tarball_path.display(), filesys_dir.display())
         };
-
-        println!("DecompressCmd> {}", extract_cmd);
-
-        run_command(&extract_cmd)?;
         
-        // 检查解压是否成功
+        extract_progress.update(50);
+        run_command(&extract_cmd)?;
+        extract_progress.update(100);
+        extract_progress.finish();
+        
         if !filesys_dir.join("bin").exists() {
             return Err("解压失败：未找到 bin 目录".into());
         }
         
-        println!("\n解压完成，正在删除镜像...");
+        println!("\n  正在清理临时文件...");
+        thread::sleep(Duration::from_secs(1));
         if use_custom_link {
             run_command(&format!("rm -rf {}", config.tarball))?;
         } else {
             run_command(&format!("rm -rf {}", config.image_dir))?;
         }
         
-        println!("\n正在创建元数据...");
+        println!("\n  正在创建系统元数据...");
+        thread::sleep(Duration::from_secs(1));
         let mut meta = SystemMeta::new(system_name.clone(), config.os_name.to_lowercase());
         let mirror_url = config_manager.get_mirror_for_distro(&config.os_name.to_lowercase())?;
         meta.mirror_url = Some(mirror_url.clone());
         let meta_content = meta.to_string();
         fs::write(install_dir.join("meta.txt"), meta_content)?;
         
-        println!("\n正在优化系统设置...");
+        println!("\n  正在配置系统环境...");
+        thread::sleep(Duration::from_secs(1));
         self.setup_system_new(&config, &install_dir, &filesys_dir)?;
         
+        println!("\n  正在检测系统信息...");
         run_command(&format!("screenfetch -A \"{}\" -L", config.screenfetch_name))?;
         
-        println!("\n   {} (ID: {}) 安装成功", system_name, instance_id);
-        println!("\n    祝您使用愉快！\n");
+        println!("\n  ✓ {} 安装成功！", system_name);
+        println!("\n  系统ID: {}", instance_id);
+        println!("  启动命令: cd $HOME/Ostermux/{instance_id} && ./start.sh");
+        println!("\n  祝您使用愉快！\n");
         
         Ok(())
     }
     
     fn generate_instance_id(&self) -> Result<String, Box<dyn std::error::Error>> {
         if let Some(id) = &self.instance_id {
-            println!("使用预设的实例ID: {}", id);
             return Ok(id.clone());
         }
         
         let installed_systems = get_installed_systems()?;
         let base_name = self.distro_type.to_string().to_lowercase();
         
-        // 使用正则表达式找出同类型系统的最大数字后缀
         use std::collections::HashSet;
         let mut numbers = HashSet::new();
         
@@ -241,7 +241,6 @@ impl LinuxDistro {
             }
         }
         
-        // 找到最大的数字，然后+1
         let mut max_num = 0;
         for num in &numbers {
             if *num > max_num {
@@ -250,23 +249,23 @@ impl LinuxDistro {
         }
         
         let instance_id = format!("{}{}", base_name, max_num + 1);
-        println!("生成的实例ID: {}", instance_id);
-        
         Ok(instance_id)
     }
     
-    #[allow(dead_code)]
-    pub fn uninstall(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let config = self.get_config();
+    fn download_from_custom_link(&self, link: &str, tarball: &str) -> Result<(), Box<dyn std::error::Error>> {
+        println!("\n  下载链接: {}", link);
+        println!("  保存路径: {}\n", tarball);
         
-        println!("\n正在卸载 {} 请耐心等待", config.os_name);
+        let mut progress = ProgressBar::new(100, "正在下载镜像文件".to_string());
         
-        if config.needs_chmod {
-            run_command(&format!("chmod 777 -R $HOME/Ostermux/{}", config.os_name))?;
+        run_command(&format!("wget -O {} {}", tarball, link))?;
+        
+        progress.update(100);
+        progress.finish();
+        
+        if !PathBuf::from(tarball).exists() {
+            return Err("下载失败：文件不存在".into());
         }
-        
-        run_command(&format!("rm -rf $HOME/Ostermux/{}", config.os_name))?;
-        println!("\n卸载完成!");
         
         Ok(())
     }
@@ -336,92 +335,22 @@ impl LinuxDistro {
         }
     }
     
-    #[allow(dead_code)]
-    fn setup_system(&self, config: &DistroConfig) -> Result<(), Box<dyn std::error::Error>> {
-        let home = get_home_dir()?;
-        let install_dir = home.join("Ostermux").join(&config.os_name);
-        let fs_dir = install_dir.join(&config.folder_name);
-        
-        // 创建绑定目录
-        fs::create_dir_all(install_dir.join("binds"))?;
-        
-        // 复制启动脚本
-        let source_script = PathBuf::from(config.os_name.to_lowercase()).join(&config.shname);
-        let dest_script = install_dir.join(&config.shname);
-        fs::copy(&source_script, &dest_script)?;
-        
-        // 修复脚本权限
-        run_command(&format!("termux-fix-shebang {}", dest_script.display()))?;
-        run_command(&format!("chmod +x {}", dest_script.display()))?;
-        
-        // 特殊设置
-        match self.distro_type {
-            DistroType::Ubuntu | DistroType::Kali | DistroType::Debian => {
-                // 替换 sources.list
-                let sources_list = fs_dir.join("etc/apt/sources.list");
-                if sources_list.exists() {
-                    fs::remove_file(&sources_list)?;
-                }
-                let source_sources = PathBuf::from(config.os_name.to_lowercase()).join("sources.list");
-                fs::copy(source_sources, sources_list)?;
-            }
-            DistroType::CentOS => {
-                // CentOS 特殊设置
-                fs::create_dir_all(fs_dir.join("tmp"))?;
-                fs::write(fs_dir.join("etc/hosts"), "127.0.0.1 localhost\n")?;
-                fs::write(fs_dir.join("etc/resolv.conf"), "nameserver 8.8.8.8\nnameserver 8.8.4.4\n")?;
-            }
-            DistroType::Fedora => {
-                // Fedora 特殊设置
-                fs::write(fs_dir.join("etc/hosts"), "127.0.0.1 localhost\n")?;
-                fs::write(fs_dir.join("etc/resolv.conf"), "nameserver 8.8.4.4\nnameserver 8.8.4.4\n")?;
-                
-                // 复制 repo 文件
-                let repos_dir = fs_dir.join("etc/yum.repos.d");
-                if repos_dir.exists() {
-                    for entry in fs::read_dir(&repos_dir)? {
-                        let entry = entry?;
-                        fs::remove_file(entry.path())?;
-                    }
-                }
-                
-                for entry in fs::read_dir("fedora")? {
-                    let entry = entry?;
-                    let path = entry.path();
-                    if let Some(filename) = path.file_name() {
-                        if let Some(filename_str) = filename.to_str() {
-                            if filename_str.ends_with(".repo") {
-                                fs::copy(&path, repos_dir.join(filename))?;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        Ok(())
-    }
-    
     fn setup_system_new(&self, config: &DistroConfig, install_dir: &PathBuf, filesys_dir: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-        // 创建启动脚本
         let start_script_content = self.generate_start_script(config, filesys_dir)?;
         fs::write(install_dir.join("start.sh"), start_script_content)?;
         run_command(&format!("termux-fix-shebang {}", install_dir.join("start.sh").display()))?;
         run_command(&format!("chmod +x {}", install_dir.join("start.sh").display()))?;
         
-        // 特殊设置
         match self.distro_type {
             DistroType::Ubuntu | DistroType::Kali | DistroType::Debian => {
-                // 替换 sources.list
                 let sources_list = filesys_dir.join("etc/apt/sources.list");
                 if sources_list.exists() {
                     fs::remove_file(&sources_list)?;
                 }
                 
-                // 尝试从多个可能的路径复制 sources.list
                 let source_paths = vec![
-                    PathBuf::from(config.os_name.to_lowercase()).join("sources.list"),  // 当前目录
-                    PathBuf::from("/root/TermuxForLinux").join(config.os_name.to_lowercase()).join("sources.list"),  // 项目根目录
+                    PathBuf::from(config.os_name.to_lowercase()).join("sources.list"),
+                    PathBuf::from("/root/TermuxForLinux").join(config.os_name.to_lowercase()).join("sources.list"),
                 ];
                 
                 let mut copied = false;
@@ -435,22 +364,18 @@ impl LinuxDistro {
                 }
                 
                 if !copied {
-                    // 如果无法复制源文件，至少创建一个空的 sources.list
                     fs::write(&sources_list, "")?;
                 }
             }
             DistroType::CentOS => {
-                // CentOS 特殊设置
                 fs::create_dir_all(filesys_dir.join("tmp"))?;
                 fs::write(filesys_dir.join("etc/hosts"), "127.0.0.1 localhost\n")?;
                 fs::write(filesys_dir.join("etc/resolv.conf"), "nameserver 8.8.8.8\nnameserver 8.8.4.4\n")?;
             }
             DistroType::Fedora => {
-                // Fedora 特殊设置
                 fs::write(filesys_dir.join("etc/hosts"), "127.0.0.1 localhost\n")?;
                 fs::write(filesys_dir.join("etc/resolv.conf"), "nameserver 8.8.4.4\nnameserver 8.8.4.4\n")?;
                 
-                // 复制 repo 文件
                 let repos_dir = filesys_dir.join("etc/yum.repos.d");
                 if repos_dir.exists() {
                     for entry in fs::read_dir(&repos_dir)? {
@@ -459,10 +384,9 @@ impl LinuxDistro {
                     }
                 }
                 
-                // 尝试从多个可能的路径复制 repo 文件
                 let fedora_dirs = vec![
-                    PathBuf::from("fedora"),  // 当前目录
-                    PathBuf::from("/root/TermuxForLinux/fedora"),  // 项目根目录
+                    PathBuf::from("fedora"),
+                    PathBuf::from("/root/TermuxForLinux/fedora"),
                 ];
                 
                 for fedora_dir in fedora_dirs {
@@ -525,20 +449,6 @@ else
 fi
 "#;
         Ok(script.to_string())
-    }
-}
-
-impl LinuxDistro {
-    fn download_from_custom_link(&self, link: &str, tarball: &str) -> Result<(), Box<dyn std::error::Error>> {
-        println!("正在下载: {}", link);
-        run_command(&format!("wget -O {} {}", tarball, link))?;
-        
-        // 检查下载是否成功
-        if !PathBuf::from(tarball).exists() {
-            return Err("下载失败：文件不存在".into());
-        }
-        
-        Ok(())
     }
 }
 
