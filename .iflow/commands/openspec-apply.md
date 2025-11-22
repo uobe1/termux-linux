@@ -1,8 +1,8 @@
 ---
-name: OpenSpec: Apply
-description: Implement an approved OpenSpec change and keep tasks in sync.
+name: /openspec-apply
+id: openspec-apply
 category: OpenSpec
-tags: [openspec, apply]
+description: Implement an approved OpenSpec change and keep tasks in sync.
 ---
 <!-- OPENSPEC:START -->
 **Guardrails**
