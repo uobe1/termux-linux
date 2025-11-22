@@ -37,3 +37,49 @@ pub fn check_command_exists(command: &str) -> bool {
         .map(|output| output.status.success())
         .unwrap_or(false)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run_command_success() {
+        let result = run_command("echo 'test'");
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_run_command_failure() {
+        let result = run_command("false");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_run_command_with_output_success() {
+        let result = run_command_with_output("echo 'hello world'");
+        assert!(result.is_ok());
+        let output = result.unwrap();
+        assert_eq!(output.trim(), "hello world");
+    }
+
+    #[test]
+    fn test_run_command_with_output_multiline() {
+        let result = run_command_with_output("echo 'line1'; echo 'line2'");
+        assert!(result.is_ok());
+        let output = result.unwrap();
+        assert!(output.contains("line1"));
+        assert!(output.contains("line2"));
+    }
+
+    #[test]
+    fn test_check_command_exists_true() {
+        let result = check_command_exists("echo");
+        assert!(result);
+    }
+
+    #[test]
+    fn test_check_command_exists_false() {
+        let result = check_command_exists("nonexistentcommand12345");
+        assert!(!result);
+    }
+}

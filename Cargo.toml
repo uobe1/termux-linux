@@ -8,6 +8,9 @@ description = "A Rust port of TermuxForLinux - Install and run Linux distributio
 [dependencies]
 toml = "0.8"
 
+[dev-dependencies]
+tempfile = "3.8"
+
 [profile.release]
 lto = true
 codegen-units = 1

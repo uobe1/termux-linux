@@ -94,6 +94,99 @@ impl SystemMeta {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_system_meta_new() {
+        let meta = SystemMeta::new("test-system".to_string(), "ubuntu".to_string());
+        
+        assert_eq!(meta.name, "test-system");
+        assert_eq!(meta.os_type, "ubuntu");
+        assert_eq!(meta.user_group, "root");
+        assert_eq!(meta.permissions, "755");
+        assert!(meta.mirror_url.is_none());
+        assert!(!meta.created_at.is_empty());
+    }
+
+    #[test]
+    fn test_system_meta_to_string() {
+        let mut meta = SystemMeta::new("test-system".to_string(), "ubuntu".to_string());
+        meta.mirror_url = Some("https://mirror.example.com".to_string());
+        
+        let result = meta.to_string();
+        
+        assert!(result.contains("name = test-system"));
+        assert!(result.contains("os_type = ubuntu"));
+        assert!(result.contains("user_group = root"));
+        assert!(result.contains("permissions = 755"));
+        assert!(result.contains("mirror_url = https://mirror.example.com"));
+        assert!(result.contains("created_at ="));
+    }
+
+    #[test]
+    fn test_system_meta_from_string() {
+        let content = r#"name = test-system
+os_type = ubuntu
+created_at = 2025-11-14T12:00:00Z
+user_group = root
+permissions = 755
+mirror_url = https://mirror.example.com"#;
+        
+        let result = SystemMeta::from_string(content);
+        assert!(result.is_ok());
+        
+        let meta = result.unwrap();
+        assert_eq!(meta.name, "test-system");
+        assert_eq!(meta.os_type, "ubuntu");
+        assert_eq!(meta.created_at, "2025-11-14T12:00:00Z");
+        assert_eq!(meta.user_group, "root");
+        assert_eq!(meta.permissions, "755");
+        assert_eq!(meta.mirror_url, Some("https://mirror.example.com".to_string()));
+    }
+
+    #[test]
+    fn test_system_meta_from_string_partial() {
+        let content = r#"name = test-system
+os_type = ubuntu"#;
+        
+        let result = SystemMeta::from_string(content);
+        assert!(result.is_ok());
+        
+        let meta = result.unwrap();
+        assert_eq!(meta.name, "test-system");
+        assert_eq!(meta.os_type, "ubuntu");
+        assert_eq!(meta.user_group, "root");
+        assert_eq!(meta.permissions, "755");
+        assert!(meta.mirror_url.is_none());
+    }
+
+    #[test]
+    fn test_system_meta_from_string_empty() {
+        let content = "";
+        
+        let result = SystemMeta::from_string(content);
+        assert!(result.is_ok());
+        
+        let meta = result.unwrap();
+        assert_eq!(meta.name, "");
+        assert_eq!(meta.os_type, "");
+        assert_eq!(meta.user_group, "root");
+        assert_eq!(meta.permissions, "755");
+        assert!(meta.mirror_url.is_none());
+    }
+
+    #[test]
+    fn test_distro_type_display() {
+        assert_eq!(DistroType::Ubuntu.to_string(), "Ubuntu");
+        assert_eq!(DistroType::Kali.to_string(), "Kali");
+        assert_eq!(DistroType::Debian.to_string(), "Debian");
+        assert_eq!(DistroType::CentOS.to_string(), "CentOS");
+        assert_eq!(DistroType::Fedora.to_string(), "Fedora");
+    }
+}
+
 pub struct LinuxDistro {
     distro_type: DistroType,
     instance_id: Option<String>,

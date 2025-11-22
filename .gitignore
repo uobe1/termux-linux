@@ -1,7 +1,6 @@
 target/
 proot-distro*/
 termux*/
-openspec/
 AGENTS.md
 CLAUDE.md
 IFLOW.md
