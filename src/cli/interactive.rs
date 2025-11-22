@@ -1,6 +1,5 @@
 use std::io;
 use std::io::Write;
-use crate::utils::get_installed_systems;
 use crate::ui::{print_section, print_item, print_info, print_success};
 use crate::i18n::Translator;
 

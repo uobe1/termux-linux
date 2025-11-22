@@ -2,13 +2,11 @@ pub mod args;
 pub mod interactive;
 
 pub use args::*;
-pub use interactive::*;
 
 use std::io;
 use std::process::Command;
 use crate::utils::get_system_metas;
 use crate::installer::install_interactive;
-use crate::system::uninstall_system_by_id;
 use crate::ui::display_system_list;
 use crate::i18n::Translator;
 

@@ -1,6 +1,5 @@
 pub mod interactive;
 
-pub use interactive::*;
 
 use crate::i18n::Translator;
 

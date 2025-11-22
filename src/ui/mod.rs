@@ -3,4 +3,3 @@ pub mod display;
 pub mod progress;
 
 pub use display::*;
-pub use progress::*;
