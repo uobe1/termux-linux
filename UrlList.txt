@@ -1,0 +1,165 @@
+#############
+#
+#  Z
+#  ARM64
+#  Z
+#
+#############
+
+**adelie**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-aarch64-pd-v4.29.0.tar.xz"
+
+**distro**:.sample
+URL['aarch64']="https://example.com/archive.tar.gz"
+
+**deepin**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/deepin-aarch64-pd-v4.29.0.tar.xz"
+
+**debian**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/debian-trixie-aarch64-pd-v4.29.0.tar.xz"
+
+**chimera**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/chimera-aarch64-pd-v4.29.0.tar.xz"
+
+**opensuse**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-aarch64-pd-v4.29.0.tar.xz"
+
+**artix**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/artix-aarch64-pd-v4.29.0.tar.xz"
+
+**manjaro**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/manjaro-aarch64-pd-v4.29.0.tar.xz"
+
+**archlinux**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/archlinux-aarch64-pd-v4.29.0.tar.xz"
+
+**void**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/void-aarch64-pd-v4.29.0.tar.xz"
+
+**fedora**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/fedora-aarch64-pd-v4.29.0.tar.xz"
+
+**ubuntu**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/ubuntu-questing-aarch64-pd-v4.30.1.tar.xz"
+
+**rockylinux**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/rocky-aarch64-pd-v4.29.0.tar.xz"
+
+**alpine**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-aarch64-pd-v4.30.1.tar.xz"
+
+**pardus**:
+URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/pardus-aarch64-pd-v4.29.0.tar.xz"
+
+#############
+#
+#  Z
+#  ARM32
+#  Z
+#
+#############
+
+**adelie**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-armv7-pd-v4.29.0.tar.xz"
+
+**debian**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/debian-trixie-arm-pd-v4.29.0.tar.xz"
+
+**void**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/void-arm-pd-v4.29.0.tar.xz"
+
+**opensuse**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-arm-pd-v4.29.0.tar.xz"
+
+**ubuntu**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/ubuntu-questing-arm-pd-v4.30.1.tar.xz"
+
+**archlinux**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/archlinux-arm-pd-v4.29.0.tar.xz"
+
+**alpine**:
+URL['arm']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-arm-pd-v4.30.1.tar.xz"
+
+#############
+#
+#  Z
+#  x86_64
+#  Z
+#
+#############
+
+**adelie**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-x86_64-pd-v4.29.0.tar.xz"
+
+**deepin**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/deepin-x86_64-pd-v4.29.0.tar.xz"
+
+**opensuse**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-x86_64-pd-v4.29.0.tar.xz"
+
+**debian**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/debian-trixie-x86_64-pd-v4.29.0.tar.xz"
+
+**rockylinux**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/rocky-x86_64-pd-v4.29.0.tar.xz"
+
+**pardus**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/pardus-x86_64-pd-v4.29.0.tar.xz"
+
+**ubuntu**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/ubuntu-questing-x86_64-pd-v4.30.1.tar.xz"
+
+**alpine**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-x86_64-pd-v4.30.1.tar.xz"
+
+**chimera**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/chimera-x86_64-pd-v4.29.0.tar.xz"
+
+**fedora**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/fedora-x86_64-pd-v4.29.0.tar.xz"
+
+**archlinux**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/archlinux-x86_64-pd-v4.29.0.tar.xz"
+
+**void**:
+URL['x86_64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/void-x86_64-pd-v4.29.0.tar.xz"
+
+#############
+#
+#  Z
+#  i686
+#  Z
+#
+#############
+
+**debian**:
+URL['i686']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/debian-trixie-i686-pd-v4.29.0.tar.xz"
+
+**archlinux**:
+URL['i686']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/archlinux-i686-pd-v4.29.0.tar.xz"
+
+**void**:
+URL['i686']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/void-i686-pd-v4.29.0.tar.xz"
+
+**opensuse**:
+URL['i686']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-i686-pd-v4.29.0.tar.xz"
+
+**alpine**:
+URL['i686']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-i686-pd-v4.30.1.tar.xz"
+
+**pardus**:
+URL['i686']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/pardus-i686-pd-v4.29.0.tar.xz"
+
+#############
+#
+#  Z
+#  risv64
+#  Z
+#
+#############
+
+**chimera**:
+URL['riscv64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/chimera-riscv64-pd-v4.29.0.tar.xz"
+
+**alpine**:
+URL['riscv64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-riscv64-pd-v4.30.1.tar.xz"

@@ -1,0 +1,31 @@
+需求列表（按优先级排序，数字越小优先级越高）：
+s0: 支持 UrlList.txt 中定义的所有系统/架构，并使用其中提供的链接
+s1: 修复退出系统时的 panic 问题：
+```bash
+./target/release/insOs
+  _____
+ |_   _|__ _ __ _ __ ___  _   ___  __
+   | |/ _ \ '__| '_ ` _ \| | | \/ /                                          | |  __/ |  | | | | | | |_| |>  <
+   |_|\___|_|  |_| |_| |_|\__,_|_/\_\
+  Termux Linux 安装器                                                     
+  1. 安装系统         2. 卸载系统                                           3. 查询已安装系统   4. 退出程序
+
+  请选择要执行的操作:2
+thread 'main' (17057) panicked at src/cli/mod.rs:39:73:
+index out of bounds: the len is 0 but the index is 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+s2: 移除硬编码的用户组权限、时间等信息，改为动态获取真实数据
+s3: 在配置文件中增加 {distro}-init 选项，用于定义安装特定发行版时执行的自定义命令。该命令仅在安装时执行一次，后续通过 start.sh 登录时不再执行。
+格式如下：
+```format
+{distro}-init = ---
+# 命令，根据 shebang 执行，支持多行，多行使用--- ---，单行直接填写
+# {distro} 是系统名称
+---
+```
+s4: 安装完成后询问用户是否立即启动系统
+s5: 实现真实的进度条，替代当前的模拟实现
+s6: 模块化重构代码，确保每个代码文件不超过 5KB
+s7: 为 CLI 界面添加颜色支持（仅添加颜色，不改变界面布局和风格）。当前界面无颜色，仅提供 no-color 选项
+s8: 将"最小化安装"更名为"最小安装"

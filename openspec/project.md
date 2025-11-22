@@ -1,104 +1,68 @@
 # Project Context
 
 ## Purpose
-TermuxForLinux (termux-linux-install) 是一个在 Android Termux 环境中安装和运行多种 Linux 发行版的 Rust 工具集。项目目标：
-- 支持多系统并行安装（同一发行版可安装多个实例）
-- 提供简洁友好的命令行和交互式界面
-- 无需 root 权限，使用 proot 技术实现容器化
-- 针对中国网络环境优化（支持国内镜像源）
-- 支持 Ubuntu, Kali, Debian, CentOS, Fedora 等主流发行版
+insOs 是一个用于在 Android Termux 环境中安装和运行多种 Linux 发行版的工具集。该项目使用 Rust 实现，支持多系统并行安装、自定义命名和精细化配置。主要目标是为 Termux 用户提供简单易用的 Linux 环境安装和管理解决方案。
 
 ## Tech Stack
-- **Rust 2021 Edition** - 核心编程语言
-- **标准库优先** - 仅使用 Rust 标准库，无外部依赖
-- **proot** - 用户空间容器化技术（外部工具）
-- **架构**: 支持 ARM64 架构（Android Termux 环境）
-- **构建优化**: LTO、单编译单元、panic=abort、二进制瘦身
+- **Rust 2021 Edition**: 主要编程语言，提供内存安全和高性能
+- **TOML**: 配置文件格式，用于系统配置管理
+- **标准库优先**: 仅使用 Rust 标准库和 toml 依赖，减少外部依赖
+- **proot 技术**: 用户空间容器化技术，无需 root 权限运行 Linux
+- **Termux 环境**: 目标运行环境，Android 上的 Linux 终端模拟器
 
 ## Project Conventions
 
 ### Code Style
-- 遵循 Rust 官方代码风格指南（rustfmt）
-- 命名约定：
-  - 模块名：小写蛇形命名（snake_case）
-  - 函数名：小写蛇形命名（snake_case）
-  - 结构体/枚举：大驼峰命名（PascalCase）
-  - 常量：大写蛇形命名（SCREAMING_SNAKE_CASE）
-- 错误处理：统一使用 `Result<T, E>` 类型
-- 注释：使用中文注释说明复杂逻辑
-- 避免编译器警告：所有代码应无 warnings
+- **命名约定**:
+  - 模块名：小写蛇形命名 (snake_case)
+  - 函数名：小写蛇形命名 (snake_case)
+  - 结构体/枚举：大驼峰命名 (PascalCase)
+  - 常量：大写蛇形命名 (SCREAMING_SNAKE_CASE)
+- **模块化设计**: 每个功能领域独立模块，清晰分离职责
+- **错误处理**: 使用 Result<T, Box<dyn std::error::Error>> 进行统一错误处理
+- **代码格式**: 使用 rustfmt 进行代码格式化
+- **文档注释**: 为公共 API 提供详细的文档注释
 
 ### Architecture Patterns
-- **模块化架构**：按功能划分独立模块
-  - `main.rs` - 程序入口（仅负责初始化和启动）
-  - `cli.rs` - 命令行参数处理、交互式菜单
-  - `distro.rs` - Linux 发行版定义和元数据
-  - `utils.rs` - 通用工具函数（文件操作、命令执行）
-  - `installer.rs` - 系统安装流程（下载、解压、配置）
-  - `system.rs` - 系统管理和卸载逻辑
-  - `config.rs` - 配置文件管理
-  - `ui.rs` - 用户界面显示和格式化输出
-
-- **设计原则**：
-  - 单一职责：每个模块专注一个功能领域
-  - 低耦合：模块间依赖最小化，通过公共接口通信
-  - 高内聚：相关功能集中在同一模块
-  - 可扩展性：新功能通过添加或扩展模块实现
-
-- **数据管理**：
-  - 元数据存储：每个系统实例使用 `meta.txt` 存储元信息
-  - 配置驱动：通过 `$HOME/Ostermux/config` 统一管理镜像源
-  - 实例命名：格式为 `{DISTRO}{NUMBER}`（如 debian1、ubuntu2）
+- **模块化架构**: 按功能领域划分模块 (cli, config, distro, installer, system, ui, utils, i18n)
+- **单一职责原则**: 每个模块专注一个功能领域
+- **低耦合高内聚**: 模块间依赖最小化，相关功能集中
+- **依赖注入**: 通过参数传递依赖，提高可测试性
+- **配置驱动**: 通过外部配置文件管理系统行为
 
 ### Testing Strategy
-- 当前阶段：手动测试为主
-- 测试环境：Android Termux on ARM64
-- 重点测试场景：
-  - 多系统并行安装和运行
-  - 配置文件解析和镜像源切换
-  - 小屏幕终端界面适配
-  - 异常处理和错误恢复
-- 未来计划：添加单元测试和集成测试
+- **单元测试**: 使用 Rust 内置测试框架
+- **临时文件测试**: 使用 tempfile 依赖进行文件系统测试
+- **集成测试**: 测试模块间交互和完整工作流
+- **错误路径测试**: 确保所有错误情况都有适当的处理
+- **测试命令**: `cargo test` 运行所有测试
 
 ### Git Workflow
-- 主分支：`main`
-- 提交规范：
-  - `feat:` 新功能
-  - `fix:` 错误修复
-  - `refactor:` 代码重构
-  - `docs:` 文档更新
-  - `test:` 测试相关
-  - `chore:` 构建/工具链更新
-- 提交语言：中文或英文均可
+- **主分支**: main 分支用于稳定版本
+- **提交消息**: 使用清晰、简洁的中文提交消息
+- **OpenSpec 规范**: 使用 OpenSpec 管理开发任务和变更
+- **顺序开发**: 按照任务列表顺序进行开发，不允许乱序
+- **状态同步**: 完成任务后必须更新相应文件中的状态
 
 ## Domain Context
-- **Termux 环境**：Android 终端模拟器，无 root 权限
-- **proot 技术**：用户空间 chroot 实现，关键参数：
-  - `--link2symlink` - 将硬链接转换为符号链接
-  - `--delay-directory-restore` - 延迟目录权限恢复
-  - `--preserve-permissions` - 保留权限
-  - `--exclude='dev'` - 排除设备文件
-- **rootfs 结构**：标准 Linux 文件系统层次（FHS）
-- **镜像源**：优先使用国内镜像（USTC、163、阿里云、清华等）
-- **压缩格式**：tar.xz（高压缩比）
+- **Linux 发行版管理**: 支持 Ubuntu、Kali、Debian、CentOS、Fedora 等主流发行版
+- **ARM64 架构**: 主要针对 Android Termux 的 ARM64 环境
+- **容器化技术**: 使用 proot 实现用户空间容器，无需 root 权限
+- **镜像源管理**: 支持自定义镜像源，优化下载速度
+- **系统元数据**: 每个系统实例维护独立的元数据信息
+- **国际化支持**: 支持中英文界面切换
 
 ## Important Constraints
-- **无 root 权限**：所有操作必须在用户空间完成
-- **架构限制**：主要支持 ARM64，需考虑跨架构兼容性
-- **存储限制**：Android 存储空间有限，需优化安装包大小
-- **网络限制**：中国大陆网络环境，需提供国内镜像源
-- **终端限制**：小屏幕适配（最小宽度支持 40 字符）
-- **性能约束**：移动设备性能有限，需优化启动速度
-- **权限问题**：解压时必须使用 `--no-same-owner` 避免权限错误
+- **Termux 环境**: 必须在 Android Termux 环境中运行
+- **ARM64 架构**: 主要支持 ARM64 架构的系统镜像
+- **存储空间**: 需要足够的存储空间（建议至少 2GB 可用空间）
+- **网络连接**: 需要稳定的网络连接下载系统镜像
+- **proot 依赖**: 用户必须预先安装 proot 工具
+- **权限限制**: 某些功能可能需要适当的 Termux 权限
 
 ## External Dependencies
-- **proot** - 必需的外部工具（用户需在 Termux 中安装）
-- **tar** - 解压 rootfs 压缩包（Termux 自带）
-- **wget/curl** - 下载镜像文件（Termux 自带）
-- **screenfetch** - 可选的系统信息显示工具
-- **镜像源**：
-  - Ubuntu: mirrors.ustc.edu.cn
-  - Debian: mirrors.163.com
-  - Kali: http.kali.org
-  - CentOS: mirrors.aliyun.com
-  - Fedora: mirrors.tuna.tsinghua.edu.cn
+- **proot**: 必需的外部工具，用于用户空间容器化
+- **pkg**: Termux 包管理器，用于安装依赖
+- **tar**: 系统自带工具，用于解压 rootfs 压缩包
+- **wget/curl**: 系统自带工具，用于下载镜像文件
+- **screenfetch**: 可选工具，用于显示系统信息
