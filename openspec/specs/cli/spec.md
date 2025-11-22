@@ -1,5 +1,8 @@
-## ADDED Requirements
+# cli Specification
 
+## Purpose
+TBD - created by archiving change modernize-architecture-and-ui. Update Purpose after archive.
+## Requirements
 ### Requirement: Command-Line Argument Parsing
 The system SHALL provide command-line argument parsing for all operations including install, uninstall, list, and help.
 
@@ -65,8 +68,6 @@ The system SHALL provide a help command that displays usage information.
 - **THEN** the system SHALL display usage information including all available commands and options
 - **AND** show examples of common operations
 
-## MODIFIED Requirements
-
 ### Requirement: Executable Name
 The system SHALL use `insOs` as the executable name.
 
@@ -87,12 +88,7 @@ The system SHALL reference `$HOME/termos/` as the installation directory.
 - **WHEN** user installs a new system
 - **THEN** the system SHALL create and use `$HOME/termos/` as the base directory
 
-#### Scenario: Check for existing installations
+#### Scenario: Check installation directory
 - **WHEN** listing installed systems
-- **THEN** the system SHALL scan `$HOME/termos/` for installed distributions
+- **THEN** the system SHALL scan `$HOME/termos/` for system directories
 
-## REMOVED Requirements
-
-### Requirement: Legacy Command Names
-**Reason**: Executable renamed from `termux-linux-install` to `insOs` for better branding
-**Migration**: Users must update scripts and commands to use `insOs` instead of `termux-linux-install`

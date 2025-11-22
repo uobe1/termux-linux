@@ -71,8 +71,6 @@ The system SHALL adapt the display layout based on terminal width.
 - **WHEN** terminal width is greater than 100 columns
 - **THEN** the system SHALL use expanded formatting with better visual separation
 
-## MODIFIED Requirements
-
 ### Requirement: Progress Bar Style
 The system SHALL use an ASCII art progress bar with `=` and spaces showing percentage completion.
 
@@ -108,9 +106,3 @@ The system SHALL print section headers with ASCII characters for better compatib
   Installation Progress
   ---------------------
   ```
-
-## REMOVED Requirements
-
-### Requirement: Unicode Box Drawing Characters
-**Reason**: Some terminals may not properly render Unicode box drawing characters
-**Migration**: All UI elements will use standard ASCII characters for maximum compatibility

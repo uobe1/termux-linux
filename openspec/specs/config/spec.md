@@ -1,5 +1,8 @@
-## ADDED Requirements
+# config Specification
 
+## Purpose
+TBD - created by archiving change modernize-architecture-and-ui. Update Purpose after archive.
+## Requirements
 ### Requirement: Custom Shell Command Configuration
 The system SHALL support custom shell commands in the configuration file for execution at login.
 
@@ -45,8 +48,6 @@ The system SHALL continue to support mirror URL configuration for all distributi
 - **THEN** the system SHALL fall back to the configured mirror URL
 - **AND** if no mirror is configured, use the built-in default
 
-## MODIFIED Requirements
-
 ### Requirement: Configuration Directory Path
 The system SHALL use `$HOME/termos/` as the configuration directory.
 
@@ -75,8 +76,3 @@ The system SHALL use optimized mirror URLs for better performance.
 - **WHEN** installing Kali without custom configuration
 - **THEN** the system SHALL use `http://http.kali.org/kali/`
 
-## REMOVED Requirements
-
-### Requirement: Old Configuration Format Compatibility
-**Reason**: Configuration directory renamed from `Ostermux` to `termos`
-**Migration**: The system will check old location as fallback for one major version, then remove support

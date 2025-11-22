@@ -1,5 +1,8 @@
-## ADDED Requirements
+# installer Specification
 
+## Purpose
+TBD - created by archiving change modernize-architecture-and-ui. Update Purpose after archive.
+## Requirements
 ### Requirement: Real User and Group Detection
 The system SHALL detect the actual user and group information instead of using hardcoded values.
 
@@ -58,8 +61,6 @@ The system SHALL display all installation messages in the selected language.
 - **WHEN** language is set to English
 - **THEN** all installation prompts and status messages SHALL be in English
 
-## MODIFIED Requirements
-
 ### Requirement: Installation Directory Structure
 The system SHALL install systems to `$HOME/termos/{system-id}/`.
 
@@ -84,8 +85,3 @@ The system SHALL use optimized default settings for better user experience.
 - **THEN** the system SHALL install only essential packages
 - **AND** skip additional configuration steps
 
-## REMOVED Requirements
-
-### Requirement: Hardcoded User and Group Values
-**Reason**: System now detects actual user and group information dynamically
-**Migration**: All hardcoded user/group assumptions are replaced with dynamic detection
