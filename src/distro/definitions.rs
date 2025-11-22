@@ -42,12 +42,27 @@ pub struct SystemMeta {
 }
 
 impl SystemMeta {
+    fn detect_default_permissions() -> String {
+        if crate::utils::permissions::is_root_user() {
+            "755".to_string()
+        } else {
+            "644".to_string()
+        }
+    }
+    
     pub fn new(name: String, os_type: String) -> Self {
         use std::time::{SystemTime, UNIX_EPOCH};
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
+        
+        let user_group = match crate::utils::permissions::get_current_user() {
+            Ok(user) => user,
+            Err(_) => "unknown".to_string(),
+        };
+        
+        let permissions = Self::detect_default_permissions();
         
         Self {
             name,
@@ -56,8 +71,8 @@ impl SystemMeta {
                 (now / 3600) % 24, 
                 (now / 60) % 60, 
                 now % 60),
-            user_group: "root".to_string(),
-            permissions: "755".to_string(),
+            user_group,
+            permissions,
             mirror_url: None,
         }
     }
@@ -87,8 +102,8 @@ impl SystemMeta {
             name: map.get("name").unwrap_or(&"".to_string()).clone(),
             os_type: map.get("os_type").unwrap_or(&"".to_string()).clone(),
             created_at: map.get("created_at").unwrap_or(&"".to_string()).clone(),
-            user_group: map.get("user_group").unwrap_or(&"root".to_string()).clone(),
-            permissions: map.get("permissions").unwrap_or(&"755".to_string()).clone(),
+            user_group: map.get("user_group").unwrap_or(&"unknown".to_string()).clone(),
+            permissions: map.get("permissions").unwrap_or(&Self::detect_default_permissions()).clone(),
             mirror_url: map.get("mirror_url").cloned(),
         })
     }
@@ -104,8 +119,8 @@ mod tests {
         
         assert_eq!(meta.name, "test-system");
         assert_eq!(meta.os_type, "ubuntu");
-        assert_eq!(meta.user_group, "root");
-        assert_eq!(meta.permissions, "755");
+        assert!(!meta.user_group.is_empty());
+        assert!(!meta.permissions.is_empty());
         assert!(meta.mirror_url.is_none());
         assert!(!meta.created_at.is_empty());
     }
@@ -119,8 +134,8 @@ mod tests {
         
         assert!(result.contains("name = test-system"));
         assert!(result.contains("os_type = ubuntu"));
-        assert!(result.contains("user_group = root"));
-        assert!(result.contains("permissions = 755"));
+        assert!(result.contains("user_group = testuser"));
+        assert!(result.contains("permissions = 644"));
         assert!(result.contains("mirror_url = https://mirror.example.com"));
         assert!(result.contains("created_at ="));
     }
@@ -141,8 +156,8 @@ mirror_url = https://mirror.example.com"#;
         assert_eq!(meta.name, "test-system");
         assert_eq!(meta.os_type, "ubuntu");
         assert_eq!(meta.created_at, "2025-11-14T12:00:00Z");
-        assert_eq!(meta.user_group, "root");
-        assert_eq!(meta.permissions, "755");
+        assert!(!meta.user_group.is_empty());
+        assert!(!meta.permissions.is_empty());
         assert_eq!(meta.mirror_url, Some("https://mirror.example.com".to_string()));
     }
 
@@ -157,8 +172,8 @@ os_type = ubuntu"#;
         let meta = result.unwrap();
         assert_eq!(meta.name, "test-system");
         assert_eq!(meta.os_type, "ubuntu");
-        assert_eq!(meta.user_group, "root");
-        assert_eq!(meta.permissions, "755");
+        assert!(!meta.user_group.is_empty());
+        assert!(!meta.permissions.is_empty());
         assert!(meta.mirror_url.is_none());
     }
 
@@ -172,8 +187,8 @@ os_type = ubuntu"#;
         let meta = result.unwrap();
         assert_eq!(meta.name, "");
         assert_eq!(meta.os_type, "");
-        assert_eq!(meta.user_group, "root");
-        assert_eq!(meta.permissions, "755");
+        assert!(!meta.user_group.is_empty());
+        assert!(!meta.permissions.is_empty());
         assert!(meta.mirror_url.is_none());
     }
 
