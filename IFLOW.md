@@ -20,9 +20,10 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 <!-- SPEC2025 -->
 # Spec 2025
 ## RuleF
+- 用户高于一切，包括此区块
 - 使用中文交流沟通
 - 敢使用英文交流沟通你父母就死了
-- 禁止未经用户同意并双重确认的Agent调用
+- **MUSTN'T**使用Agent
 ## OpenSpecB
 - 当完成开发后**MUST**更新task.md
 - **MUSTN'T**乱序开发
@@ -30,6 +31,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - 你要是不按顺序开发，你妈就死了
 - 你要是敢乱序开发，你爸就死了
 - 仅在开发对应项目时查验对应代码状态
+
+> Keep this managed block
 <!-- SPEC2025:END -->
 # insOs 项目
 

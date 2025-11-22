@@ -21,17 +21,20 @@ pub fn uninstall_system_by_id(system_id: &str, translator: &Translator) -> Resul
     Ok(())
 }
 
+#[allow(dead_code)]
 pub struct SystemManager {
     base_dir: PathBuf,
 }
 
 impl SystemManager {
+    #[allow(dead_code)]
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         let home = get_home_dir()?;
         let base_dir = home.join("termos");
         Ok(Self { base_dir })
     }
     
+    #[allow(dead_code)]
     pub fn get_installed_systems(&self) -> Result<Vec<String>, Box<dyn std::error::Error>> {
         if !self.base_dir.exists() {
             fs::create_dir_all(&self.base_dir)?;
@@ -56,10 +59,12 @@ impl SystemManager {
         Ok(systems)
     }
     
+    #[allow(dead_code)]
     pub fn get_system_dir(&self, system_id: &str) -> PathBuf {
         self.base_dir.join(system_id)
     }
     
+    #[allow(dead_code)]
     pub fn system_exists(&self, system_id: &str) -> bool {
         self.get_system_dir(system_id).exists()
     }

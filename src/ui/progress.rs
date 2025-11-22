@@ -22,6 +22,7 @@ impl ProgressBar {
         self.draw();
     }
     
+    #[allow(dead_code)]
     pub fn increment(&mut self, amount: u64) {
         self.current += amount;
         self.draw();

@@ -2,6 +2,7 @@ use crate::distro::SystemMeta;
 use crate::i18n::Translator;
 use crate::ui::colors::Theme;
 
+#[allow(dead_code)]
 pub fn get_terminal_width() -> usize {
     match std::env::var("COLUMNS") {
         Ok(width_str) => width_str.parse().unwrap_or(80),
@@ -50,6 +51,7 @@ pub fn print_success(message: &str) {
     println!("\n  ✓ {}\n", message);
 }
 
+#[allow(dead_code)]
 pub fn print_error(message: &str) {
     println!("\n  ✗ {}\n", message);
 }
@@ -58,14 +60,17 @@ pub fn print_info(message: &str) {
     println!("  ℹ {}", message);
 }
 
+#[allow(dead_code)]
 pub fn print_success_theme(message: &str, theme: &Theme) {
     println!("\n  {}\n", theme.success(&format!("✓ {}", message)));
 }
 
+#[allow(dead_code)]
 pub fn print_error_theme(message: &str, theme: &Theme) {
     println!("\n  {}\n", theme.error(&format!("✗ {}", message)));
 }
 
+#[allow(dead_code)]
 pub fn print_info_theme(message: &str, theme: &Theme) {
     println!("  {}", theme.info(&format!("ℹ {}", message)));
 }

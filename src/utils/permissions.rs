@@ -19,6 +19,7 @@ pub fn get_current_user() -> Result<String, Box<dyn std::error::Error>> {
     Ok(user)
 }
 
+#[allow(dead_code)]
 pub fn get_user_groups() -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let output = Command::new("groups")
         .output()
@@ -37,6 +38,7 @@ pub fn get_user_groups() -> Result<Vec<String>, Box<dyn std::error::Error>> {
     Ok(groups)
 }
 
+#[allow(dead_code)]
 pub fn check_write_permission(path: &Path) -> bool {
     if !path.exists() {
         if let Some(parent) = path.parent() {
@@ -65,6 +67,7 @@ pub fn check_write_permission(path: &Path) -> bool {
     }
 }
 
+#[allow(dead_code)]
 pub fn check_read_permission(path: &Path) -> bool {
     if !path.exists() {
         return false;
@@ -90,6 +93,7 @@ pub fn check_read_permission(path: &Path) -> bool {
     }
 }
 
+#[allow(dead_code)]
 pub fn ensure_dir_exists(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     if !path.exists() {
         fs::create_dir_all(path)?;
@@ -117,6 +121,7 @@ pub fn get_current_uid() -> Result<u32, Box<dyn std::error::Error>> {
     Ok(uid)
 }
 
+#[allow(dead_code)]
 pub fn get_group_name(gid: u32) -> Result<String, Box<dyn std::error::Error>> {
     let output = Command::new("getent")
         .args(["group", &gid.to_string()])
@@ -138,6 +143,7 @@ pub fn get_group_name(gid: u32) -> Result<String, Box<dyn std::error::Error>> {
     }
 }
 
+#[allow(dead_code)]
 pub fn check_execute_permission(path: &Path) -> bool {
     if !path.exists() {
         return false;

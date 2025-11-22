@@ -1,5 +1,6 @@
 use std::process::Command;
 
+#[allow(dead_code)]
 pub fn check_network_connectivity() -> bool {
     Command::new("ping")
         .args(["-c", "1", "-W", "5", "8.8.8.8"])
@@ -8,6 +9,7 @@ pub fn check_network_connectivity() -> bool {
         .unwrap_or(false)
 }
 
+#[allow(dead_code)]
 pub fn download_file(url: &str, output_path: &str) -> Result<(), Box<dyn std::error::Error>> {
     let status = Command::new("wget")
         .args(["-O", output_path, url])
@@ -18,15 +20,6 @@ pub fn download_file(url: &str, output_path: &str) -> Result<(), Box<dyn std::er
     }
     
     Ok(())
-}
-
-#[allow(dead_code)]
-pub fn check_url_reachable(url: &str) -> bool {
-    Command::new("curl")
-        .args(["-I", "--connect-timeout", "5", url])
-        .output()
-        .map(|output| output.status.success())
-        .unwrap_or(false)
 }
 
 #[cfg(test)]

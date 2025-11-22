@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use super::loader::Language;
 
 pub struct Translator {
+    #[allow(dead_code)]
     lang: Language,
     strings: HashMap<String, String>,
 }
@@ -29,10 +30,12 @@ impl Translator {
         result
     }
     
+    #[allow(dead_code)]
     pub fn get_language(&self) -> Language {
         self.lang
     }
     
+    #[allow(dead_code)]
     pub fn get_language_name(&self) -> &'static str {
         self.lang.as_name()
     }
