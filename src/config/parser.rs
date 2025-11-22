@@ -32,6 +32,10 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
 # kali-link = https://custom-mirror.com/kali-rootfs-arm64.tar.xz
 # centos-link = https://custom-mirror.com/centos-rootfs-arm64.tar.xz
 # fedora-link = https://custom-mirror.com/fedora-rootfs-arm64.tar.xz
+
+# Shell 配置（可选）
+# 自定义登录 shell 命令，默认为 /bin/bash --login
+# shell = /bin/zsh --login
 "#;
             fs::write(&config_path, default_config)?;
             println!("已创建默认配置文件: {:?}", config_path);
@@ -80,6 +84,11 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
         let link_key = format!("{}-link", distro_name.to_lowercase());
         
         Ok(config.get(&link_key).cloned())
+    }
+    
+    pub fn get_shell_command(&self) -> Result<Option<String>, Box<dyn std::error::Error>> {
+        let config = self.load_config()?;
+        Ok(config.get("shell").cloned())
     }
 }
 
@@ -198,6 +207,38 @@ mod tests {
         };
         
         let result = config_manager.get_download_link_for_distro("ubuntu");
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), None);
+    }
+
+    #[test]
+    fn test_get_shell_command_with_config() {
+        let temp_dir = TempDir::new().unwrap();
+        let config_path = temp_dir.path().join("config");
+        
+        let mut file = File::create(&config_path).unwrap();
+        writeln!(file, "shell = /bin/zsh --login").unwrap();
+        
+        let config_manager = ConfigManager {
+            config_dir: temp_dir.path().to_path_buf(),
+        };
+        
+        let result = config_manager.get_shell_command();
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), Some("/bin/zsh --login".to_string()));
+    }
+
+    #[test]
+    fn test_get_shell_command_without_config() {
+        let temp_dir = TempDir::new().unwrap();
+        let config_path = temp_dir.path().join("config");
+        File::create(&config_path).unwrap();
+        
+        let config_manager = ConfigManager {
+            config_dir: temp_dir.path().to_path_buf(),
+        };
+        
+        let result = config_manager.get_shell_command();
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), None);
     }

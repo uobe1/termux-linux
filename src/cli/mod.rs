@@ -9,12 +9,13 @@ use crate::utils::get_system_metas;
 use crate::installer::install_interactive;
 use crate::ui::display_system_list;
 use crate::i18n::Translator;
+use crate::ui::colors::Theme;
 
-pub fn run_cli(translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run_cli(translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     
     if args.len() > 1 {
-        return handle_command_line_args(&args, translator);
+        return handle_command_line_args(&args, translator, theme);
     }
     
     check_and_install_screenfetch(translator)?;
@@ -49,13 +50,13 @@ pub fn run_cli(translator: &Translator) -> Result<(), Box<dyn std::error::Error>
 
 fn check_and_install_screenfetch(translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
     let output = Command::new("pkg")
-        .args(&["list-installed"])
+        .args(["list-installed"])
         .output()?;
     
     if !String::from_utf8_lossy(&output.stdout).contains("screenfetch") {
         crate::ui::print_info(&translator.t_fmt("installing_package", &["screenfetch"]));
         Command::new("pkg")
-            .args(&["install", "screenfetch", "-y"])
+            .args(["install", "screenfetch", "-y"])
             .spawn()?
             .wait()?;
     }

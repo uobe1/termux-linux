@@ -3,8 +3,9 @@ use crate::distro::{LinuxDistro, DistroType};
 use crate::system::uninstall_system_by_id;
 use crate::ui::{print_info, print_success};
 use crate::i18n::Translator;
+use crate::ui::colors::Theme;
 
-pub fn handle_command_line_args(args: &[String], translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
+pub fn handle_command_line_args(args: &[String], translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std::error::Error>> {
     match args[1].as_str() {
         "--list" => {
             let metas = crate::utils::get_system_metas()?;
@@ -63,12 +64,15 @@ pub fn handle_command_line_args(args: &[String], translator: &Translator) -> Res
                 return Ok(());
             }
             
-            print_info(&translator.t_fmt("uninstalling_system", &[&args[2]]));
+            print_info(&translator.t_fmt("uninstall_system", &[&args[2]]));
             uninstall_system_by_id(&args[2], translator)?;
             print_success(&translator.t("uninstall_complete"));
         }
         "--help" => {
             display_help(translator);
+        }
+        "--no-color" => {
+            println!("\n  {}\n", translator.t("color_output_disabled"));
         }
         _ => {
             println!("\n  {}\n", translator.t_fmt("unknown_argument", &[&args[1]]));

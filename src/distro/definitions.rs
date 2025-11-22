@@ -422,7 +422,9 @@ impl LinuxDistro {
     }
     
     fn setup_system_new(&self, config: &DistroConfig, install_dir: &PathBuf, filesys_dir: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-        let start_script_content = self.generate_start_script(config, filesys_dir)?;
+        let config_manager = ConfigManager::new()?;
+        let custom_shell = config_manager.get_shell_command()?;
+        let start_script_content = self.generate_start_script(config, filesys_dir, custom_shell.as_deref())?;
         fs::write(install_dir.join("start.sh"), start_script_content)?;
         run_command(&format!("termux-fix-shebang {}", install_dir.join("start.sh").display()))?;
         run_command(&format!("chmod +x {}", install_dir.join("start.sh").display()))?;
@@ -442,7 +444,7 @@ impl LinuxDistro {
                 let mut copied = false;
                 for source_path in source_paths {
                     if source_path.exists() {
-                        if let Ok(_) = fs::copy(&source_path, &sources_list) {
+                        if fs::copy(&source_path, &sources_list).is_ok() {
                             copied = true;
                             break;
                         }
@@ -478,14 +480,12 @@ impl LinuxDistro {
                 for fedora_dir in fedora_dirs {
                     if fedora_dir.exists() {
                         if let Ok(entries) = fs::read_dir(&fedora_dir) {
-                            for entry in entries {
-                                if let Ok(entry) = entry {
-                                    let path = entry.path();
-                                    if let Some(filename) = path.file_name() {
-                                        if let Some(filename_str) = filename.to_str() {
-                                            if filename_str.ends_with(".repo") {
-                                                let _ = fs::copy(&path, repos_dir.join(filename));
-                                            }
+                            for entry in entries.flatten() {
+                                let path = entry.path();
+                                if let Some(filename) = path.file_name() {
+                                    if let Some(filename_str) = filename.to_str() {
+                                        if filename_str.ends_with(".repo") {
+                                            let _ = fs::copy(&path, repos_dir.join(filename));
                                         }
                                     }
                                 }
@@ -499,8 +499,9 @@ impl LinuxDistro {
         Ok(())
     }
     
-    fn generate_start_script(&self, _config: &DistroConfig, _filesys_dir: &PathBuf) -> Result<String, Box<dyn std::error::Error>> {
-        let script = r#"#!/data/data/com.termux/files/usr/bin/bash
+    fn generate_start_script(&self, _config: &DistroConfig, _filesys_dir: &PathBuf, custom_shell: Option<&str>) -> Result<String, Box<dyn std::error::Error>> {
+        let shell_cmd = custom_shell.unwrap_or("/bin/bash --login");
+        let script = format!(r#"#!/data/data/com.termux/files/usr/bin/bash
 cd $(dirname $0)
 ## unset LD_PRELOAD in case termux-exec is installed
 unset LD_PRELOAD
@@ -526,15 +527,15 @@ command+=" HOME=/root"
 command+=" PATH=/usr/local/sbin:/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/games:/usr/local/games"
 command+=" TERM=$TERM"
 command+=" LANG=C.UTF-8"
-command+=" /bin/bash --login"
+command+=" {}"
 com="$@"
 if [ -z "$1" ];then
     exec $command
 else
     $command -c "$com"
 fi
-"#;
-        Ok(script.to_string())
+"#, shell_cmd);
+        Ok(script)
     }
 }
 

@@ -9,17 +9,21 @@ mod i18n;
 
 use cli::run_cli;
 use i18n::{I18nLoader, Translator, Language};
+use ui::colors::Theme;
 use std::env;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     
     let lang = detect_language(&args);
+    let no_color = detect_no_color(&args);
+    
     let loader = I18nLoader::new()?;
     let strings = loader.load_language(lang)?;
     let translator = Translator::new(lang, strings);
+    let theme = Theme::new(no_color);
     
-    run_cli(&translator)
+    run_cli(&translator, &theme)
 }
 
 fn detect_language(args: &[String]) -> Language {
@@ -38,4 +42,8 @@ fn detect_language(args: &[String]) -> Language {
     }
     
     Language::English
+}
+
+fn detect_no_color(args: &[String]) -> bool {
+    args.contains(&"--no-color".to_string()) || env::var("NO_COLOR").is_ok()
 }

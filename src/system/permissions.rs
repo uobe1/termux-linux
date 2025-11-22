@@ -28,7 +28,6 @@ pub fn get_user_groups() -> Result<Vec<String>, Box<dyn std::error::Error>> {
     
     let groups_str = String::from_utf8_lossy(&output.stdout);
     let groups: Vec<String> = groups_str
-        .trim()
         .split_whitespace()
         .map(String::from)
         .collect();

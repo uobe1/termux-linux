@@ -1,5 +1,6 @@
 use crate::distro::SystemMeta;
 use crate::i18n::Translator;
+use crate::ui::colors::Theme;
 
 pub fn get_terminal_width() -> usize {
     match std::env::var("COLUMNS") {
@@ -56,3 +57,16 @@ pub fn print_error(message: &str) {
 pub fn print_info(message: &str) {
     println!("  ℹ {}", message);
 }
+
+pub fn print_success_theme(message: &str, theme: &Theme) {
+    println!("\n  {}\n", theme.success(&format!("✓ {}", message)));
+}
+
+pub fn print_error_theme(message: &str, theme: &Theme) {
+    println!("\n  {}\n", theme.error(&format!("✗ {}", message)));
+}
+
+pub fn print_info_theme(message: &str, theme: &Theme) {
+    println!("  {}", theme.info(&format!("ℹ {}", message)));
+}
+
