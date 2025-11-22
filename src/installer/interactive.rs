@@ -96,5 +96,17 @@ fn install_distro(
     crate::ui::print_info(&format!("Download URL: {}", url));
     crate::ui::print_info(&format!("Default packages: {:?}", distro_def.default_packages));
     
+    let config_manager = crate::config::ConfigManager::new()?;
+    if let Some(init_commands) = config_manager.get_init_commands_for_distro(distro_def.name.as_str())? {
+        crate::ui::print_info(&translator.t("executing_init_commands"));
+        let commands: Vec<&str> = init_commands.lines().collect();
+        for (i, cmd) in commands.iter().enumerate() {
+            let cmd = cmd.trim();
+            if !cmd.is_empty() {
+                crate::ui::print_info(&format!("[{}] {}", i + 1, cmd));
+            }
+        }
+    }
+    
     Ok(())
 }

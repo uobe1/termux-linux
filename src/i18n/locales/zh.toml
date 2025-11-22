@@ -85,6 +85,7 @@ starting_minimal = "开始最小化安装..."
 starting_standard = "开始标准安装..."
 invalid_choice_exclamation = "不合法的选择！"
 install_complete_exclamation = "安装完成！"
+executing_init_commands = "执行自定义初始化命令..."
 
 # Display
 no_systems_here = "[ 这里没有任何系统... ]"

@@ -131,11 +131,11 @@ target/
 ## 核心功能
 
 ### 1. **多发行版支持**
-- **Ubuntu**: 基于 Ubuntu 的 Linux 环境，默认安装 build-essential, curl, wget, git, vim, htop
-- **Kali**: 安全测试和渗透测试专用发行版，默认安装 kali-linux-headless, metasploit-framework, nmap, wireless-tools, aircrack-ng, john, hydra, sqlmap
-- **Debian**: 稳定可靠的 Debian 系统，默认安装 build-essential, devscripts, curl, wget, git, vim, htop, tmux
-- **CentOS**: 企业级 Linux 发行版，默认安装 epel-release, vim, curl, wget, git, htop, net-tools, lsof
-- **Fedora**: 前沿技术的 Fedora 系统，默认安装 @development-tools, curl, wget, git, vim, htop, tmux, dnf-plugins-core
+- **Ubuntu**: 基于 Ubuntu 的 Linux 环境
+- **Kali**: 安全测试和渗透测试专用发行版
+- **Debian**: 稳定可靠的 Debian 系统
+- **CentOS**: 企业级 Linux 发行版
+- **Fedora**: 前沿技术的 Fedora 系统
 
 ### 2. **交互式安装**
 - 可视化菜单选择发行版
@@ -317,32 +317,12 @@ cargo clippy
 cargo fmt
 ```
 
-### 添加新功能
-
-1. 遵循 OpenSpec 规范进行开发
-2. 按顺序开发任务(参见 openspec/changes/ 目录)
-3. 添加单元测试
-4. 更新相关文档
-
-### OpenSpec 开发流程
-
-本项目使用 OpenSpec 规范管理开发任务：
-
-1. **查看项目上下文**: `openspec/project.md` 包含项目技术规范和约定
-2. **模块规范**: `openspec/specs/` 目录包含各模块的详细规范
-3. **变更记录**: `openspec/changes/` 目录记录所有变更和提案
-4. **顺序开发**: 必须按照任务列表的顺序进行开发
-5. **更新任务状态**: 完成每个任务后，必须在相应文件中更新状态
-6. **创建提案**: 对于重大功能或架构变更，需要先创建 OpenSpec 提案
-7. **遵循规范**: 所有代码更改必须符合 OpenSpec 规范要求
-
 ### 代码规范
 
 - 使用模块化架构
 - 遵循 Rust 最佳实践
 - 添加必要的注释
 - 保持代码可读性
-- 遵循 OpenSpec 规范
 - 命名约定：
   - 模块名：小写蛇形命名(snake_case)
   - 函数名：小写蛇形命名(snake_case)
@@ -416,7 +396,6 @@ shell = /usr/bin/fish
 - 增强 UI 体验(颜色主题、进度条)
 - 支持自定义 Shell 配置
 - 优化默认系统设置
-- 添加 OpenSpec 规范管理
 - 完善错误处理和用户反馈
 - 添加命令行参数支持(`--name`, `--minimal`)
 - 改进配置文件管理和默认值
@@ -458,10 +437,3 @@ shell = /usr/bin/fish
    - 使用国内镜像源提高下载速度
    - 考虑使用最小化安装模式
    - 在安装过程中避免运行其他大型程序
-
-### 获取帮助
-
-- 查看项目文档 `openspec/project.md`
-- 提交 Issue 获取帮助
-- 参考 README.md 获取使用示例
-- 使用 `insOs --help` 查看命令行选项

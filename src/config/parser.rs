@@ -36,6 +36,16 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
 # Shell 配置（可选）
 # 自定义登录 shell 命令，默认为 /bin/bash --login
 # shell = /bin/zsh --login
+
+# 自定义初始化命令（可选，支持多行格式）
+# ubuntu-init = """
+# apt update
+# apt install -y vim curl wget
+# """
+# debian-init = """
+# apt update
+# apt install -y build-essential git
+# """
 "#;
             fs::write(&config_path, default_config)?;
             println!("已创建默认配置文件: {:?}", config_path);
@@ -56,11 +66,45 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
         
         if config_path.exists() {
             let content = fs::read_to_string(&config_path)?;
-            for line in content.lines() {
-                if let Some((key, value)) = line.split_once('=') {
+            let mut lines = content.lines().peekable();
+            
+            while let Some(line) = lines.next() {
+                let trimmed = line.trim();
+                
+                if trimmed.is_empty() || trimmed.starts_with('#') {
+                    continue;
+                }
+                
+                if let Some((key, value)) = trimmed.split_once('=') {
                     let key = key.trim().to_string();
-                    let value = value.trim().to_string();
-                    config.insert(key, value);
+                    let value = value.trim();
+                    
+                    if value.starts_with("""") && !value.ends_with("""") {
+                        let mut multi_line_value = String::new();
+                        if value.len() > 3 {
+                            multi_line_value.push_str(&value[3..]);
+                            multi_line_value.push('\n');
+                        }
+                        
+                        while let Some(next_line) = lines.next() {
+                            if next_line.trim().ends_with("""") {
+                                if next_line.len() > 3 {
+                                    multi_line_value.push_str(&next_line[..next_line.len()-3]);
+                                }
+                                break;
+                            } else {
+                                multi_line_value.push_str(next_line);
+                                multi_line_value.push('\n');
+                            }
+                        }
+                        
+                        config.insert(key, multi_line_value.trim().to_string());
+                    } else if value.starts_with("""") && value.ends_with("""") && value.len() >= 6 {
+                        let clean_value = &value[3..value.len()-3];
+                        config.insert(key, clean_value.trim().to_string());
+                    } else {
+                        config.insert(key, value.to_string());
+                    }
                 }
             }
         }
@@ -89,6 +133,12 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
     pub fn get_shell_command(&self) -> Result<Option<String>, Box<dyn std::error::Error>> {
         let config = self.load_config()?;
         Ok(config.get("shell").cloned())
+    }
+    
+    pub fn get_init_commands_for_distro(&self, distro_name: &str) -> Result<Option<String>, Box<dyn std::error::Error>> {
+        let config = self.load_config()?;
+        let init_key = format!("{}-init", distro_name.to_lowercase());
+        Ok(config.get(&init_key).cloned())
     }
 }
 
