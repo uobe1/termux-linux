@@ -6,7 +6,17 @@ use crate::i18n::Translator;
 use crate::ui::colors::Theme;
 
 pub fn handle_command_line_args(args: &[String], translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std::error::Error>> {
-    match args[1].as_str() {
+    // Skip --lang parameter if present (language is already handled in main)
+    let mut start_idx = 1;
+    if args.len() > 2 && args[1] == "--lang" {
+        start_idx = 3;
+    }
+    
+    if start_idx >= args.len() {
+        return Ok(());
+    }
+    
+    match args[start_idx].as_str() {
         "--list" => {
             let metas = crate::utils::get_system_metas()?;
             crate::ui::display_system_list(&metas, translator)?;
@@ -54,7 +64,7 @@ pub fn handle_command_line_args(args: &[String], translator: &Translator, theme:
             };
             
             print_info(&translator.t_fmt("installing_package", &[&distro_type.to_string()]));
-            distro.install()?;
+            distro.install(translator)?;
             print_success(&translator.t("installation_complete"));
         }
         "--uninstall" => {
@@ -75,7 +85,7 @@ pub fn handle_command_line_args(args: &[String], translator: &Translator, theme:
             println!("\n  {}\n", translator.t("color_output_disabled"));
         }
         _ => {
-            println!("\n  {}\n", translator.t_fmt("unknown_argument", &[&args[1]]));
+            println!("\n  {}\n", translator.t_fmt("unknown_argument", &[&args[start_idx]]));
             display_help(translator);
         }
     }

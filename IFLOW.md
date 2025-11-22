@@ -37,6 +37,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 insOs 是一个用于在 Android Termux 环境中安装和运行多种 Linux 发行版的工具集。该项目使用 Rust 实现，支持多系统并行安装、自定义命名和精细化配置。可以轻松地在 Termux 中安装、管理和卸载不同的 Linux 发行版，包括 Ubuntu、Kali、Debian、CentOS 和 Fedora。Rust 版本提供了更好的性能、内存安全性和类型安全。
 
+本项目遵循 OpenSpec 规范进行开发，所有重大更改和架构调整都通过 OpenSpec 提案进行管理。
+
 ## 项目结构
 
 ```
@@ -149,7 +151,7 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
 ```bash
 # 克隆项目
 git clone <repository-url>
-cd termuxlinux
+cd insOs
 
 # 编译发布版本
 cargo build --release
@@ -232,12 +234,23 @@ cd $HOME/termos/<system-id> && ./start.sh
 3. 添加单元测试
 4. 更新相关文档
 
+### OpenSpec 开发流程
+
+本项目使用 OpenSpec 规范管理开发任务：
+
+1. **查看任务**: 所有开发任务记录在 `openspec/changes/modernize-architecture-and-ui/tasks.md`
+2. **顺序开发**: 必须按照任务列表的顺序进行开发
+3. **更新任务状态**: 完成每个任务后，必须在 task.md 中更新状态
+4. **创建提案**: 对于重大功能或架构变更，需要先创建 OpenSpec 提案
+5. **遵循规范**: 所有代码更改必须符合 OpenSpec 规范要求
+
 ### 代码规范
 
 - 使用模块化架构
 - 遵循 Rust 最佳实践
 - 添加必要的注释
 - 保持代码可读性
+- 遵循 OpenSpec 规范
 
 ## 配置示例
 
@@ -270,6 +283,15 @@ shell = /bin/zsh --login
 # 使用 Fish Shell
 shell = /usr/bin/fish
 ```
+
+## 项目历史
+
+本项目最初名为 `termux-linux-install`，后重命名为 `insOs` 以提供更简洁、更专业的品牌形象。重命名工作包括：
+
+- 更新 `Cargo.toml` 中的包名称
+- 更新所有文档和引用
+- 保持向后兼容性
+- 更新二进制文件名称
 
 ## 注意事项
 

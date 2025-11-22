@@ -210,7 +210,7 @@ impl LinuxDistro {
         }
     }
     
-    pub fn install(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn install(&self, translator: &crate::i18n::Translator) -> Result<(), Box<dyn std::error::Error>> {
         let config = self.get_config();
         
         let instance_id = self.generate_instance_id()?;
@@ -226,13 +226,13 @@ impl LinuxDistro {
         
         if let Some(link) = &custom_link {
             println!("\n  使用自定义镜像源");
-            self.download_from_custom_link(link, &config.tarball)?;
+            self.download_from_custom_link(link, &config.tarball, translator)?;
         } else {
             println!("\n  使用默认镜像源");
             if PathBuf::from(&config.image_dir).exists() {
                 println!("  镜像目录已存在，跳过下载");
             } else {
-                let mut progress = ProgressBar::new(100, "正在克隆镜像仓库".to_string());
+                let mut progress = ProgressBar::new(100, translator.t("cloning_mirror_repo").to_string());
                 progress.update(10);
                 run_command(&format!("git clone \"{}\"", config.repo_url))?;
                 progress.update(100);
@@ -255,7 +255,7 @@ impl LinuxDistro {
             return Err(format!("镜像文件不存在: {:?}", tarball_path).into());
         }
         
-        let mut extract_progress = ProgressBar::new(100, "正在解压文件".to_string());
+        let mut extract_progress = ProgressBar::new(100, translator.t("extraction_in_progress").to_string());
         extract_progress.update(20);
         
         let extract_cmd = if config.exclude_dev {
@@ -338,11 +338,11 @@ impl LinuxDistro {
         Ok(instance_id)
     }
     
-    fn download_from_custom_link(&self, link: &str, tarball: &str) -> Result<(), Box<dyn std::error::Error>> {
+    fn download_from_custom_link(&self, link: &str, tarball: &str, translator: &crate::i18n::Translator) -> Result<(), Box<dyn std::error::Error>> {
         println!("\n  下载链接: {}", link);
         println!("  保存路径: {}\n", tarball);
         
-        let mut progress = ProgressBar::new(100, "正在下载镜像文件".to_string());
+        let mut progress = ProgressBar::new(100, translator.t("downloading_image").to_string());
         
         run_command(&format!("wget -O {} {}", tarball, link))?;
         

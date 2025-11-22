@@ -15,7 +15,14 @@ pub fn run_cli(translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std
     let args: Vec<String> = std::env::args().collect();
     
     if args.len() > 1 {
-        return handle_command_line_args(&args, translator, theme);
+        handle_command_line_args(&args, translator, theme)?;
+        // If handle_command_line_args returns Ok(()) without doing anything,
+        // it means only --lang was provided, so continue to interactive menu
+        if args.len() == 3 && args[1] == "--lang" {
+            // Continue to interactive menu
+        } else {
+            return Ok(());
+        }
     }
     
     check_and_install_screenfetch(translator)?;

@@ -55,7 +55,7 @@ pub fn install_interactive(translator: &Translator) -> Result<(), Box<dyn std::e
                 LinuxDistro::new(distro_type)
             };
             print_info(&translator.t("starting_minimal"));
-            distro.install()?;
+            distro.install(translator)?;
         }
         Ok(2) | Ok(3) => {
             let distro = if let Some(name) = name {
@@ -64,7 +64,7 @@ pub fn install_interactive(translator: &Translator) -> Result<(), Box<dyn std::e
                 LinuxDistro::new(distro_type)
             };
             print_info(&translator.t("starting_standard"));
-            distro.install()?;
+            distro.install(translator)?;
         }
         _ => {
             println!("\n{}", translator.t("invalid_choice_exclamation"));
