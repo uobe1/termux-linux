@@ -35,9 +35,29 @@ pub fn run_cli(translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std
         match choice {
             1 => install_interactive(translator)?,
             2 => {
-                let index = (choice - 1) as usize;
-                crate::system::uninstall_system_by_id(&installed_systems[index], translator)?;
-                crate::ui::print_success(&translator.t("uninstall_complete"));
+                if installed_systems.is_empty() {
+                    crate::ui::print_info(&translator.t("no_installed_systems"));
+                } else {
+                    println!("\n  {}", translator.t("select_system_to_uninstall"));
+                    for (i, system) in installed_systems.iter().enumerate() {
+                        println!("  {}. {}", i + 1, system);
+                    }
+                    
+                    print!("\n  {}", translator.t("enter_system_number"));
+                    std::io::stdout().flush()?;
+                    
+                    let mut input = String::new();
+                    std::io::stdin().read_line(&mut input)?;
+                    
+                    match input.trim().parse::<usize>() {
+                        Ok(num) if num > 0 && num <= installed_systems.len() => {
+                            let system_id = &installed_systems[num - 1];
+                            crate::system::uninstall_system_by_id(system_id, translator)?;
+                            crate::ui::print_success(&translator.t("uninstall_complete"));
+                        }
+                        _ => crate::ui::print_error(&translator.t("invalid_selection")),
+                    }
+                }
             }
             3 => {
                 let metas = get_system_metas()?;
