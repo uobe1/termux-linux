@@ -2,7 +2,7 @@
 name: /openspec-archive
 id: openspec-archive
 category: OpenSpec
-description: Archive a deployed OpenSpec change and update specs.
+description: Archive a deployed OpenSpec change and update specs. [提案归档]
 ---
 <!-- OPENSPEC:START -->
 **Guardrails**

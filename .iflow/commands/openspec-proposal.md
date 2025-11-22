@@ -2,7 +2,7 @@
 name: /openspec-proposal
 id: openspec-proposal
 category: OpenSpec
-description: Scaffold a new OpenSpec change and validate strictly.
+description: Scaffold a new OpenSpec change and validate strictly. [提案创建]
 ---
 <!-- OPENSPEC:START -->
 **Guardrails**

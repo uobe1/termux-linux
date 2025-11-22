@@ -9,9 +9,6 @@
 **adelie**:
 URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-aarch64-pd-v4.29.0.tar.xz"
 
-**distro**:.sample
-URL['aarch64']="https://example.com/archive.tar.gz"
-
 **deepin**:
 URL['aarch64']="https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/deepin-aarch64-pd-v4.29.0.tar.xz"
 

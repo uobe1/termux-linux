@@ -2,7 +2,7 @@
 name: /openspec-apply
 id: openspec-apply
 category: OpenSpec
-description: Implement an approved OpenSpec change and keep tasks in sync.
+description: Implement an approved OpenSpec change and keep tasks in sync. [提案开发]
 ---
 <!-- OPENSPEC:START -->
 **Guardrails**
