@@ -72,6 +72,7 @@ src/
 │   ├── cmd.rs          # 命令执行
 │   ├── fs.rs           # 文件系统操作
 │   ├── net.rs          # 网络操作
+│   ├── permissions.rs  # 权限管理
 │   └── mod.rs          # 工具模块定义
 └── i18n/                # 国际化
     ├── locales/        # 语言文件
@@ -80,27 +81,45 @@ src/
     ├── loader.rs       # 语言加载器
     ├── translator.rs   # 翻译器
     └── mod.rs          # i18n 模块定义
+
+openspec/
+├── project.md          # 项目上下文和技术规范
+├── specs/              # 模块规范文档
+│   ├── cli/
+│   ├── config/
+│   ├── installer/
+│   └── ui/
+└── changes/            # 变更记录和提案
+    └── archive/
+
+target/
+├── debug/              # 调试构建输出
+└── release/            # 发布构建输出
 ```
 
 ## 核心功能
 
-### 1. 多发行版支持
-- **Ubuntu**: 基于 Ubuntu 的 Linux 环境
-- **Kali**: 安全测试和渗透测试专用发行版
-- **Debian**: 稳定可靠的 Debian 系统
-- **CentOS**: 企业级 Linux 发行版
-- **Fedora**: 前沿技术的 Fedora 系统
+### 1. **多发行版支持**
+- **Ubuntu**: 基于 Ubuntu 的 Linux 环境，默认安装 build-essential, curl, wget, git, vim, htop
+- **Kali**: 安全测试和渗透测试专用发行版，默认安装 kali-linux-headless, metasploit-framework, nmap, wireless-tools, aircrack-ng, john, hydra, sqlmap
+- **Debian**: 稳定可靠的 Debian 系统，默认安装 build-essential, devscripts, curl, wget, git, vim, htop, tmux
+- **CentOS**: 企业级 Linux 发行版，默认安装 epel-release, vim, curl, wget, git, htop, net-tools, lsof
+- **Fedora**: 前沿技术的 Fedora 系统，默认安装 @development-tools, curl, wget, git, vim, htop, tmux, dnf-plugins-core
 
-### 2. 交互式安装
+### 2. **交互式安装**
 - 可视化菜单选择发行版
 - 支持自定义系统名称
 - 多种安装模式（最小化、标准、自定义）
 - 实时进度显示
+- 命令行参数支持（`--name`, `--minimal`）
+- ASCII 艺术 Logo 和现代化界面设计
 
-### 3. 系统管理
+### 3. **系统管理**
 - 查询已安装系统列表
 - 卸载不需要的系统
-- 系统元数据管理（创建时间、用户信息等）
+- 系统元数据管理（创建时间、用户信息、权限等）
+- 支持多系统并行运行
+- 系统实例自动命名（如 ubuntu1, ubuntu2）
 
 ### 4. 配置文件管理
 
@@ -134,16 +153,20 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
 # shell = /bin/zsh --login
 ```
 
-### 5. 现代 UI 体验
+### 5. **现代 UI 体验**
 - **ASCII 艺术 Logo**: 美观的终端界面
 - **进度条**: 实时显示安装进度
 - **颜色主题**: 支持彩色输出和 `--no-color` 选项
 - **国际化**: 支持中英文界面
+- **响应式设计**: 适配小屏幕终端（最小支持 40 字符宽度）
+- **统一的消息格式**: 成功(✓)、错误(✗)、信息(ℹ)图标
 
 ### 6. 国际化支持
 - 英文界面 (`--lang en` 或环境变量 `LANG=en`)
 - 中文界面 (`--lang zh` 或环境变量 `LANG=zh_CN`)
 - 可扩展的多语言架构
+- 语言文件位置：`src/i18n/locales/`
+- 支持运行时语言切换
 
 ## 安装和使用
 
@@ -151,42 +174,57 @@ fedora-mirror = https://mirrors.tuna.tsinghua.edu.cn/fedora/
 
 ```bash
 # 克隆项目
-git clone <repository-url>
-cd insOs
+git clone git@github.com:uobe1/termux-linux.git
+cd tl
 
 # 编译发布版本
 cargo build --release
 
 # 运行程序
 ./target/release/insOs
+
+# 或者安装到系统路径
+cp target/release/insOs $PREFIX/bin/
 ```
 
 ### 命令行选项
 
 ```bash
 # 显示帮助
-./target/release/insOs --help
+insOs --help
 
 # 指定语言（英文）
-./target/release/insOs --lang en
+insOs --lang en
+
+# 指定语言（中文）
+insOs --lang zh
 
 # 禁用颜色输出
-./target/release/insOs --no-color
+insOs --no-color
 
 # 直接安装指定发行版
-./target/release/insOs --install ubuntu
-./target/release/insOs --install kali
-./target/release/insOs --install debian
-./target/release/insOs --install centos
-./target/release/insOs --install fedora
+insOs --install ubuntu
+insOs --install kali
+insOs --install debian
+insOs --install centos
+insOs --install fedora
+
+# 自定义系统名称安装
+insOs --install ubuntu --name my-ubuntu
+
+# 最小化安装
+insOs --install ubuntu --minimal
 
 # 卸载指定系统
-./target/release/insOs --uninstall <system-id>
+insOs --uninstall <system-id>
+
+# 列出已安装系统
+insOs --list
 ```
 
 ### 交互式安装
 
-1. 运行程序：`./target/release/insOs`
+1. 运行程序：`insOs`
 2. 选择"安装系统"
 3. 选择要安装的Linux发行版
 4. 输入自定义系统名称（可选）
@@ -208,7 +246,7 @@ cd $HOME/termos/<system-id> && ./start.sh
 在交互式菜单中选择"查询已安装系统"，或运行：
 
 ```bash
-./target/release/insOs --list
+insOs --list
 ```
 
 ### 卸载系统
@@ -216,7 +254,7 @@ cd $HOME/termos/<system-id> && ./start.sh
 在交互式菜单中选择"卸载系统"，然后选择要卸载的系统，或运行：
 
 ```bash
-./target/release/insOs --uninstall <system-id>
+insOs --uninstall <system-id>
 ```
 
 ## 开发
@@ -227,11 +265,31 @@ cd $HOME/termos/<system-id> && ./start.sh
 - **依赖管理**: Cargo
 - **测试框架**: 内置测试 + tempfile
 - **构建优化**: Release 配置启用 LTO 和优化选项
+- **版本**: 0.2.0
+
+### 构建和测试
+
+```bash
+# 调试构建
+cargo build
+
+# 发布构建（优化）
+cargo build --release
+
+# 运行测试
+cargo test
+
+# 运行代码检查
+cargo clippy
+
+# 格式化代码
+cargo fmt
+```
 
 ### 添加新功能
 
 1. 遵循 OpenSpec 规范进行开发
-2. 按顺序开发任务（参见 task.md）
+2. 按顺序开发任务（参见 openspec/changes/ 目录）
 3. 添加单元测试
 4. 更新相关文档
 
@@ -239,11 +297,13 @@ cd $HOME/termos/<system-id> && ./start.sh
 
 本项目使用 OpenSpec 规范管理开发任务：
 
-1. **查看任务**: 所有开发任务记录在 `openspec/changes/modernize-architecture-and-ui/tasks.md`
-2. **顺序开发**: 必须按照任务列表的顺序进行开发
-3. **更新任务状态**: 完成每个任务后，必须在 task.md 中更新状态
-4. **创建提案**: 对于重大功能或架构变更，需要先创建 OpenSpec 提案
-5. **遵循规范**: 所有代码更改必须符合 OpenSpec 规范要求
+1. **查看项目上下文**: `openspec/project.md` 包含项目技术规范和约定
+2. **模块规范**: `openspec/specs/` 目录包含各模块的详细规范
+3. **变更记录**: `openspec/changes/` 目录记录所有变更和提案
+4. **顺序开发**: 必须按照任务列表的顺序进行开发
+5. **更新任务状态**: 完成每个任务后，必须在相应文件中更新状态
+6. **创建提案**: 对于重大功能或架构变更，需要先创建 OpenSpec 提案
+7. **遵循规范**: 所有代码更改必须符合 OpenSpec 规范要求
 
 ### 代码规范
 
@@ -252,6 +312,38 @@ cd $HOME/termos/<system-id> && ./start.sh
 - 添加必要的注释
 - 保持代码可读性
 - 遵循 OpenSpec 规范
+- 命名约定：
+  - 模块名：小写蛇形命名（snake_case）
+  - 函数名：小写蛇形命名（snake_case）
+  - 结构体/枚举：大驼峰命名（PascalCase）
+  - 常量：大写蛇形命名（SCREAMING_SNAKE_CASE）
+
+## 技术架构
+
+### 核心技术栈
+- **Rust 2021 Edition**: 内存安全和高性能
+- **标准库优先**: 仅使用 Rust 标准库和 toml 依赖
+- **proot 技术**: 用户空间容器化，无需 root 权限
+- **模块化设计**: 清晰的代码组织和职责分离
+- **构建优化**: LTO、单编译单元、panic=abort、二进制瘦身
+
+### 架构模式
+- **单一职责**: 每个模块专注一个功能领域
+- **低耦合**: 模块间依赖最小化，通过公共接口通信
+- **高内聚**: 相关功能集中在同一模块
+- **可扩展性**: 新功能通过添加或扩展模块实现
+
+### 数据管理
+- **元数据存储**: 每个系统实例使用 `meta.txt` 存储元信息
+- **配置驱动**: 通过 `$HOME/termos/config` 统一管理镜像源
+- **实例命名**: 格式为 `{DISTRO}{NUMBER}`（如 debian1、ubuntu2）
+- **权限管理**: 自动检测和设置适当的文件权限
+
+### 外部依赖
+- **proot**: 必需的外部工具（用户需在 Termux 中安装）
+- **tar**: 解压 rootfs 压缩包（Termux 自带）
+- **wget/curl**: 下载镜像文件（Termux 自带）
+- **screenfetch**: 可选的系统信息显示工具
 
 ## 配置示例
 
@@ -294,6 +386,20 @@ shell = /usr/bin/fish
 - 保持向后兼容性
 - 更新二进制文件名称
 
+### 版本更新
+
+**v0.2.0**
+- 重构为多模块架构
+- 添加国际化支持（中英文界面）
+- 增强 UI 体验（颜色主题、进度条）
+- 支持自定义 Shell 配置
+- 优化默认系统设置
+- 重命名为 insOs
+- 添加 OpenSpec 规范管理
+- 完善错误处理和用户反馈
+- 添加命令行参数支持（`--name`, `--minimal`）
+- 改进配置文件管理和默认值
+
 ## 注意事项
 
 - 首次运行程序会自动创建默认配置文件
@@ -301,6 +407,8 @@ shell = /usr/bin/fish
 - 系统安装位置：`$HOME/termos/<system-id>/`
 - 需要 Termux 环境且已安装 proot
 - 某些功能需要 root 权限
+- 主要支持 ARM64 架构（Android Termux 环境）
+- 需要稳定的网络连接以下载镜像文件
 
 ## 故障排除
 
@@ -314,11 +422,25 @@ shell = /usr/bin/fish
    - 确保有足够的存储空间
    - 检查 Termux 权限设置
 
-3. **安装失败**
+### 3. **安装失败**
    - 查看错误日志
    - 尝试清理后重新安装
    - 检查自定义链接是否有效
+   - 确保有足够的存储空间（建议至少 2GB 可用空间）
+
+### 4. **命令行参数问题**
+   - 使用 `insOs --help` 查看所有可用选项
+   - 确保参数顺序正确
+   - 检查发行版名称拼写是否正确
+
+### 5. **性能问题**
+   - 使用国内镜像源提高下载速度
+   - 考虑使用最小化安装模式
+   - 在安装过程中避免运行其他大型程序
 
 ### 获取帮助
 
-查看项目文档或提交 Issue 获取帮助。
+- 查看项目文档 `openspec/project.md`
+- 提交 Issue 获取帮助
+- 参考 README.md 获取使用示例
+- 使用 `insOs --help` 查看命令行选项
