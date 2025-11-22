@@ -59,6 +59,116 @@ impl DistroName {
     }
 }
 
+use std::collections::HashMap;
+use std::fs;
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[derive(Debug, Clone)]
+pub struct SystemMeta {
+    pub name: String,
+    pub os_type: String,
+    pub created_at: String,
+    pub user_group: String,
+    pub permissions: String,
+    pub mirror_url: Option<String>,
+}
+
+impl SystemMeta {
+    pub fn new(name: String, os_type: String) -> Self {
+        let created_at = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| {
+                let secs = d.as_secs();
+                format!(
+                    "{}",
+                    chrono::DateTime::from_timestamp(secs as i64, 0)
+                        .map(|dt| dt.format("%Y-%m-%dT%H:%M:%SZ").to_string())
+                        .unwrap_or_else(|| format!("2025-01-01T00:00:00Z"))
+                )
+            })
+            .unwrap_or_else(|_| "2025-01-01T00:00:00Z".to_string());
+        
+        let user_group = crate::utils::permissions::get_current_user()
+            .unwrap_or_else(|_| "unknown".to_string());
+        
+        let permissions = if crate::utils::permissions::is_root_user() {
+            "755".to_string()
+        } else {
+            "644".to_string()
+        };
+        
+        Self {
+            name,
+            os_type,
+            created_at,
+            user_group,
+            permissions,
+            mirror_url: None,
+        }
+    }
+    
+    pub fn to_string(&self) -> String {
+        let mut result = format!("name = {}\n", self.name);
+        result.push_str(&format!("os_type = {}\n", self.os_type));
+        result.push_str(&format!("created_at = {}\n", self.created_at));
+        result.push_str(&format!("user_group = {}\n", self.user_group));
+        result.push_str(&format!("permissions = {}\n", self.permissions));
+        if let Some(mirror) = &self.mirror_url {
+            result.push_str(&format!("mirror_url = {}\n", mirror));
+        }
+        result
+    }
+    
+    pub fn from_string(content: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        let mut map = HashMap::new();
+        
+        for line in content.lines() {
+            if let Some((key, value)) = line.split_once('=') {
+                map.insert(key.trim().to_string(), value.trim().to_string());
+            }
+        }
+        
+        let user_group = map.get("user_group")
+            .map(|s| s.to_string())
+            .or_else(|| crate::utils::permissions::get_current_user().ok())
+            .unwrap_or_else(|| "unknown".to_string());
+        
+        let permissions = map.get("permissions")
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| {
+                if crate::utils::permissions::is_root_user() {
+                    "755".to_string()
+                } else {
+                    "644".to_string()
+                }
+            });
+        
+        let created_at = map.get("created_at")
+            .map(|s| s.to_string())
+            .or_else(|| {
+                SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .ok()
+                    .map(|d| {
+                        let secs = d.as_secs();
+                        chrono::DateTime::from_timestamp(secs as i64, 0)
+                            .map(|dt| dt.format("%Y-%m-%dT%H:%M:%SZ").to_string())
+                            .unwrap_or_else(|| "2025-01-01T00:00:00Z".to_string())
+                    })
+            })
+            .unwrap_or_else(|| "2025-01-01T00:00:00Z".to_string());
+        
+        Ok(SystemMeta {
+            name: map.get("name").unwrap_or(&"".to_string()).clone(),
+            os_type: map.get("os_type").unwrap_or(&"".to_string()).clone(),
+            created_at,
+            user_group,
+            permissions,
+            mirror_url: map.get("mirror_url").cloned(),
+        })
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct DistroDefinition {
     pub name: DistroName,
