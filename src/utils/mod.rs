@@ -4,4 +4,3 @@ pub mod net;
 pub mod permissions;
 
 pub use fs::*;
-pub use permissions::*;

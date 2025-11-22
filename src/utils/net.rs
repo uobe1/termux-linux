@@ -20,6 +20,7 @@ pub fn download_file(url: &str, output_path: &str) -> Result<(), Box<dyn std::er
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn check_url_reachable(url: &str) -> bool {
     Command::new("curl")
         .args(["-I", "--connect-timeout", "5", url])

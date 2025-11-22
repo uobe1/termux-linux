@@ -57,6 +57,7 @@ pub fn get_system_metas() -> Result<Vec<(String, SystemMeta)>, Box<dyn std::erro
     Ok(metas)
 }
 
+#[allow(dead_code)]
 pub fn ensure_dir(path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     if !path.exists() {
         fs::create_dir_all(path)?;
@@ -64,6 +65,7 @@ pub fn ensure_dir(path: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn read_config_file(path: &PathBuf) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
     let mut config = HashMap::new();
     

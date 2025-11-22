@@ -109,6 +109,26 @@ impl SystemMeta {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct DistroConfig {
+    pub os_name: String,
+    #[allow(dead_code)]
+    pub folder_name: String,
+    #[allow(dead_code)]
+    pub shname: String,
+    pub image_dir: String,
+    pub tarball: String,
+    pub repo_url: String,
+    pub screenfetch_name: String,
+    pub exclude_dev: bool,
+    #[allow(dead_code)]
+    pub needs_chmod: bool,
+    #[allow(dead_code)]
+    pub default_mirror: String,
+    #[allow(dead_code)]
+    pub recommended_packages: Vec<String>,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -384,6 +404,14 @@ impl LinuxDistro {
                 exclude_dev: true,
                 needs_chmod: false,
                 default_mirror: "https://mirrors.ustc.edu.cn/ubuntu/".to_string(),
+                recommended_packages: vec![
+                    "build-essential".to_string(),
+                    "curl".to_string(),
+                    "wget".to_string(),
+                    "git".to_string(),
+                    "vim".to_string(),
+                    "htop".to_string(),
+                ],
             },
             DistroType::Kali => DistroConfig {
                 os_name: "Kali".to_string(),
@@ -396,6 +424,16 @@ impl LinuxDistro {
                 exclude_dev: false,
                 needs_chmod: false,
                 default_mirror: "http://http.kali.org/kali/".to_string(),
+                recommended_packages: vec![
+                    "kali-linux-headless".to_string(),
+                    "metasploit-framework".to_string(),
+                    "nmap".to_string(),
+                    "wireless-tools".to_string(),
+                    "aircrack-ng".to_string(),
+                    "john".to_string(),
+                    "hydra".to_string(),
+                    "sqlmap".to_string(),
+                ],
             },
             DistroType::Debian => DistroConfig {
                 os_name: "Debian".to_string(),
@@ -408,6 +446,16 @@ impl LinuxDistro {
                 exclude_dev: false,
                 needs_chmod: false,
                 default_mirror: "https://mirrors.163.com/debian/".to_string(),
+                recommended_packages: vec![
+                    "build-essential".to_string(),
+                    "devscripts".to_string(),
+                    "curl".to_string(),
+                    "wget".to_string(),
+                    "git".to_string(),
+                    "vim".to_string(),
+                    "htop".to_string(),
+                    "tmux".to_string(),
+                ],
             },
             DistroType::CentOS => DistroConfig {
                 os_name: "CentOS".to_string(),
@@ -420,6 +468,16 @@ impl LinuxDistro {
                 exclude_dev: true,
                 needs_chmod: true,
                 default_mirror: "https://mirrors.aliyun.com/centos/".to_string(),
+                recommended_packages: vec![
+                    "epel-release".to_string(),
+                    "vim".to_string(),
+                    "curl".to_string(),
+                    "wget".to_string(),
+                    "git".to_string(),
+                    "htop".to_string(),
+                    "net-tools".to_string(),
+                    "lsof".to_string(),
+                ],
             },
             DistroType::Fedora => DistroConfig {
                 os_name: "Fedora".to_string(),
@@ -432,6 +490,16 @@ impl LinuxDistro {
                 exclude_dev: false,
                 needs_chmod: true,
                 default_mirror: "https://mirrors.tuna.tsinghua.edu.cn/fedora/".to_string(),
+                recommended_packages: vec![
+                    "@development-tools".to_string(),
+                    "curl".to_string(),
+                    "wget".to_string(),
+                    "git".to_string(),
+                    "vim".to_string(),
+                    "htop".to_string(),
+                    "tmux".to_string(),
+                    "dnf-plugins-core".to_string(),
+                ],
             },
         }
     }
@@ -458,12 +526,11 @@ impl LinuxDistro {
                 
                 let mut copied = false;
                 for source_path in source_paths {
-                    if source_path.exists() {
-                        if fs::copy(&source_path, &sources_list).is_ok() {
+                    if source_path.exists()
+                        && fs::copy(&source_path, &sources_list).is_ok() {
                             copied = true;
                             break;
                         }
-                    }
                 }
                 
                 if !copied {
@@ -581,15 +648,4 @@ fn get_installed_systems() -> Result<Vec<String>, Box<dyn std::error::Error>> {
     Ok(systems)
 }
 
-struct DistroConfig {
-    os_name: String,
-    folder_name: String,
-    shname: String,
-    image_dir: String,
-    tarball: String,
-    repo_url: String,
-    screenfetch_name: String,
-    exclude_dev: bool,
-    needs_chmod: bool,
-    default_mirror: String,
-}
+

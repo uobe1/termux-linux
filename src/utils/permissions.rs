@@ -49,7 +49,6 @@ pub fn check_write_permission(path: &Path) -> bool {
         Ok(metadata) => {
             use std::os::unix::fs::PermissionsExt;
             let mode = metadata.permissions().mode();
-            let current_user = get_current_user().unwrap_or_else(|_| String::new());
             
             let is_owner = metadata.uid() == get_current_uid().unwrap_or(0);
             let is_group = get_user_groups().unwrap_or_default().contains(&get_group_name(metadata.gid()).unwrap_or_default());
@@ -75,7 +74,6 @@ pub fn check_read_permission(path: &Path) -> bool {
         Ok(metadata) => {
             use std::os::unix::fs::PermissionsExt;
             let mode = metadata.permissions().mode();
-            let current_user = get_current_user().unwrap_or_else(|_| String::new());
             
             let is_owner = metadata.uid() == get_current_uid().unwrap_or(0);
             let is_group = get_user_groups().unwrap_or_default().contains(&get_group_name(metadata.gid()).unwrap_or_default());
@@ -121,7 +119,7 @@ pub fn get_current_uid() -> Result<u32, Box<dyn std::error::Error>> {
 
 pub fn get_group_name(gid: u32) -> Result<String, Box<dyn std::error::Error>> {
     let output = Command::new("getent")
-        .args(&["group", &gid.to_string()])
+        .args(["group", &gid.to_string()])
         .output()
         .map_err(|e| format!("无法执行 getent group: {}", e))?;
     

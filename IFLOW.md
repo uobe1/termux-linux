@@ -37,8 +37,6 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 insOs 是一个用于在 Android Termux 环境中安装和运行多种 Linux 发行版的工具集。该项目使用 Rust 实现，支持多系统并行安装、自定义命名和精细化配置。可以轻松地在 Termux 中安装、管理和卸载不同的 Linux 发行版，包括 Ubuntu、Kali、Debian、CentOS 和 Fedora。Rust 版本提供了更好的性能、内存安全性和类型安全。
 
-本项目遵循 OpenSpec 规范进行开发，所有重大更改和架构调整都通过 OpenSpec 提案进行管理。
-
 ## 项目结构
 
 ```

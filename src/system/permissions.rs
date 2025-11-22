@@ -1,2 +1,2 @@
 // Re-export permissions utilities from utils module
-pub use crate::utils::permissions::*;
+// Note: Functions are used directly via utils::permissions::function_name()

@@ -15,6 +15,7 @@ pub fn run_command(command: &str) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn run_command_with_output(command: &str) -> Result<String, Box<dyn std::error::Error>> {
     let output = Command::new("bash")
         .arg("-c")
@@ -30,6 +31,7 @@ pub fn run_command_with_output(command: &str) -> Result<String, Box<dyn std::err
     Ok(stdout)
 }
 
+#[allow(dead_code)]
 pub fn check_command_exists(command: &str) -> bool {
     Command::new("which")
         .arg(command)

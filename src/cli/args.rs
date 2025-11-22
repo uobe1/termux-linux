@@ -5,7 +5,7 @@ use crate::ui::{print_info, print_success};
 use crate::i18n::Translator;
 use crate::ui::colors::Theme;
 
-pub fn handle_command_line_args(args: &[String], translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std::error::Error>> {
+pub fn handle_command_line_args(args: &[String], translator: &Translator, _theme: &Theme) -> Result<(), Box<dyn std::error::Error>> {
     // Skip --lang parameter if present (language is already handled in main)
     let mut start_idx = 1;
     if args.len() > 2 && args[1] == "--lang" {
