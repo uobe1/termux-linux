@@ -1,0 +1,17 @@
+fact: 完成 modernize-termux-installer 提案的部分任务
+
+完成的任务:
+- 4.3: 测试多种初始化命令格式，将 {distro}-init 的多行格式从 """ 改为 ---
+- 5.1: 安装完成后添加启动系统提示
+- 5.2: 实现用户选择处理 (y/n)
+- 5.3: 如果选择是，自动执行启动命令
+- 5.4: 将'最小化安装'重命名为'最小安装'
+- 5.5: 更新所有语言文件中的字符串
+
+修改的文件:
+- src/installer/interactive.rs: 添加安装后启动提示和自动启动功能
+- src/i18n/locales/zh.toml: 更新中文翻译，将"最小化安装"改为"最小安装"
+- src/i18n/locales/en.toml: 更新英文翻译，将"Minimal Installation"改为"Minimal Install"
+- src/config/parser.rs: 修改多行配置格式为 ---，更新测试用例
+- src/cli/mod.rs: 添加 Write trait 导入
+- src/distro/definitions.rs: 移除重复导入

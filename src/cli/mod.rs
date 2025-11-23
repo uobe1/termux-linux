@@ -4,6 +4,7 @@ pub mod interactive;
 pub use args::*;
 
 use std::io;
+use std::io::Write;
 use std::process::Command;
 use crate::utils::get_system_metas;
 use crate::installer::install_interactive;

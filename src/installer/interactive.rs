@@ -73,6 +73,37 @@ pub fn install_interactive(translator: &Translator) -> Result<(), Box<dyn std::e
     
     print_success(&translator.t("install_complete_exclamation"));
     
+    print!("\n{}", translator.t("prompt_start_system"));
+    io::stdout().flush().unwrap();
+    
+    let mut start_input = String::new();
+    io::stdin().read_line(&mut start_input).unwrap();
+    
+    if start_input.trim().eq_ignore_ascii_case("y") || start_input.trim().eq_ignore_ascii_case("yes") {
+        crate::ui::print_info(&translator.t("starting_system"));
+        
+        let system_id = if let Some(name) = custom_name {
+            name
+        } else {
+            format!("{}{}", selected_distro.name, 1)
+        };
+        
+        let home_dir = crate::utils::fs::get_home_dir()?;
+        let system_path = home_dir.join("termos").join(&system_id);
+        
+        if system_path.exists() {
+            std::env::set_current_dir(&system_path)?;
+            
+            if std::path::Path::new("./start.sh").exists() {
+                crate::utils::cmd::run_command("./start.sh")?;
+            } else {
+                crate::ui::print_error(&translator.t("start_script_not_found"));
+            }
+        } else {
+            crate::ui::print_error(&translator.t_fmt("system_path_not_found", &[&system_id]));
+        }
+    }
+    
     Ok(())
 }
 

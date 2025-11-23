@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 use crate::utils::arch::Architecture;
+use std::fs;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum DistroName {
@@ -58,10 +60,6 @@ impl DistroName {
         }
     }
 }
-
-use std::collections::HashMap;
-use std::fs;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Clone)]
 pub struct SystemMeta {
