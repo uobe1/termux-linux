@@ -1,4 +1,5 @@
 use std::process::Command;
+use crate::i18n::Translator;
 
 pub fn run_command(command: &str) -> Result<(), Box<dyn std::error::Error>> {
     let output = Command::new("bash")
@@ -10,6 +11,22 @@ pub fn run_command(command: &str) -> Result<(), Box<dyn std::error::Error>> {
         let stderr = String::from_utf8_lossy(&output.stderr);
         let stdout = String::from_utf8_lossy(&output.stdout);
         return Err(format!("命令执行失败: {}\nstdout: {}\nstderr: {}", command, stdout, stderr).into());
+    }
+    
+    Ok(())
+}
+
+pub fn run_command_with_translator(command: &str, translator: &Translator) -> Result<(), Box<dyn std::error::Error>> {
+    let output = Command::new("bash")
+        .arg("-c")
+        .arg(command)
+        .output()?;
+    
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let error_msg = translator.t_fmt("command_execution_failed_detailed", &[command, &stdout, &stderr]);
+        return Err(error_msg.into());
     }
     
     Ok(())

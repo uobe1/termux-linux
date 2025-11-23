@@ -141,6 +141,7 @@ groups_command_failed = "groups command execution failed"
 whoami_command_failed = "whoami command execution failed"
 failed_execute_whoami = "Failed to execute whoami: {}"
 failed_execute_groups = "Failed to execute groups: {}"
+command_execution_failed_detailed = "Command execution failed: {}\nstdout: {}\nstderr: {}"
 
 # Architecture detection
 arch_detection_failed = "Architecture detection failed"

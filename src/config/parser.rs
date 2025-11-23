@@ -22,7 +22,6 @@ impl ConfigManager {
         if !config_path.exists() {
             let default_config = get_default_config_content();
             fs::write(&config_path, default_config)?;
-            println!("已创建默认配置文件: {:?}", config_path);
         }
         
         Ok(Self { config_dir })
