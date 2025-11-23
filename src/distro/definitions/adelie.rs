@@ -7,9 +7,9 @@ pub fn get_definition() -> Vec<DistroDefinition> {
     let mut distros = Vec::new();
     
     let mut urls = HashMap::new();
-    urls.insert(Architecture::Aarch64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-aarch64-pd-v4.29.0.tar.xz".to_string());
-    urls.insert(Architecture::Arm, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-armv7-pd-v4.29.0.tar.xz".to_string());
-    urls.insert(Architecture::X86_64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-x86_64-pd-v4.29.0.tar.xz".to_string());
+    urls.insert(Architecture::Aarch64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-aarch64-pd-v4.29.0.tar.xz".to_string());
+    urls.insert(Architecture::Arm, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-armv7-pd-v4.29.0.tar.xz".to_string());
+    urls.insert(Architecture::X86_64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/adelie-x86_64-pd-v4.29.0.tar.xz".to_string());
     
     distros.push(DistroDefinition {
         name: DistroName::Adelie,

@@ -11,11 +11,11 @@ pub fn get_definitions() -> Vec<DistroDefinition> {
         display_name: "Alpine".to_string(),
         urls: {
             let mut urls = HashMap::new();
-            urls.insert(Architecture::Aarch64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-aarch64-pd-v4.30.1.tar.xz".to_string());
-            urls.insert(Architecture::Arm, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-arm-pd-v4.30.1.tar.xz".to_string());
-            urls.insert(Architecture::X86_64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-x86_64-pd-v4.30.1.tar.xz".to_string());
-            urls.insert(Architecture::I686, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-i686-pd-v4.30.1.tar.xz".to_string());
-            urls.insert(Architecture::Riscv64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-riscv64-pd-v4.30.1.tar.xz".to_string());
+            urls.insert(Architecture::Aarch64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-aarch64-pd-v4.30.1.tar.xz".to_string());
+            urls.insert(Architecture::Arm, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-arm-pd-v4.30.1.tar.xz".to_string());
+            urls.insert(Architecture::X86_64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-x86_64-pd-v4.30.1.tar.xz".to_string());
+            urls.insert(Architecture::I686, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-i686-pd-v4.30.1.tar.xz".to_string());
+            urls.insert(Architecture::Riscv64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.30.1/alpine-riscv64-pd-v4.30.1.tar.xz".to_string());
             urls
         },
         description: "Alpine Linux is a security-oriented, lightweight Linux distribution based on musl libc and busybox".to_string(),
@@ -27,10 +27,10 @@ pub fn get_definitions() -> Vec<DistroDefinition> {
         display_name: "openSUSE".to_string(),
         urls: {
             let mut urls = HashMap::new();
-            urls.insert(Architecture::Aarch64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-aarch64-pd-v4.29.0.tar.xz".to_string());
-            urls.insert(Architecture::Arm, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-arm-pd-v4.29.0.tar.xz".to_string());
-            urls.insert(Architecture::X86_64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-x86_64-pd-v4.29.0.tar.xz".to_string());
-            urls.insert(Architecture::I686, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-i686-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::Aarch64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-aarch64-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::Arm, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-arm-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::X86_64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-x86_64-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::I686, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/opensuse-i686-pd-v4.29.0.tar.xz".to_string());
             urls
         },
         description: "The makers' choice for sysadmins, developers and desktop users".to_string(),

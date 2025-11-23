@@ -11,8 +11,8 @@ pub fn get_definitions() -> Vec<DistroDefinition> {
         display_name: "Fedora".to_string(),
         urls: {
             let mut urls = HashMap::new();
-            urls.insert(Architecture::Aarch64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/fedora-aarch64-pd-v4.29.0.tar.xz".to_string());
-            urls.insert(Architecture::X86_64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/fedora-x86_64-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::Aarch64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/fedora-aarch64-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::X86_64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/fedora-x86_64-pd-v4.29.0.tar.xz".to_string());
             urls
         },
         description: "Fedora creates an innovative, free, and open source platform for hardware, clouds, and containers".to_string(),
@@ -33,8 +33,8 @@ pub fn get_definitions() -> Vec<DistroDefinition> {
         display_name: "Rocky Linux".to_string(),
         urls: {
             let mut urls = HashMap::new();
-            urls.insert(Architecture::Aarch64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/rocky-aarch64-pd-v4.29.0.tar.xz".to_string());
-            urls.insert(Architecture::X86_64, "https://ghproxy.com/https://github.com/termux/proot-distro/releases/download/v4.29.0/rocky-x86_64-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::Aarch64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/rocky-aarch64-pd-v4.29.0.tar.xz".to_string());
+            urls.insert(Architecture::X86_64, "https://gh-proxy.org/https://github.com/termux/proot-distro/releases/download/v4.29.0/rocky-x86_64-pd-v4.29.0.tar.xz".to_string());
             urls
         },
         description: "Rocky Linux is a community enterprise operating system designed to be 100% bug-for-bug compatible with Enterprise Linux".to_string(),
