@@ -1,6 +1,6 @@
 ## MODIFIED Requirements
 
-### Requirement: Interactive Menu Distribution Display
+### Requirement: Interactive Menu Mode
 The system SHALL display all available distributions loaded from UrlList.txt in the interactive menu.
 
 #### Scenario: Show dynamic distribution list
