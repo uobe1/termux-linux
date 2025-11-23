@@ -1,7 +1,7 @@
 use std::process::Command;
 use crate::i18n::Translator;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Architecture {
     Aarch64,
     Arm,

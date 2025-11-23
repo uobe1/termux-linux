@@ -321,6 +321,21 @@ mod tests {
         writeln!(file, "apt install -y vim curl wget").unwrap();
         writeln!(file, "apt install -y build-essential git").unwrap();
         writeln!(file, "---").unwrap();
+        
+        let config_manager = ConfigManager {
+            config_dir: temp_dir.path().to_path_buf(),
+        };
+        
+        let result = config_manager.get_init_commands_for_distro("ubuntu");
+        assert!(result.is_ok());
+        let commands = result.unwrap();
+        assert!(commands.is_some());
+        
+        let command_str = commands.unwrap();
+        assert!(command_str.contains("apt update"));
+        assert!(command_str.contains("apt install -y vim curl wget"));
+        assert!(command_str.contains("apt install -y build-essential git"));
+    }
 
     #[test]
     fn test_get_init_commands_multi_line_with_empty_lines() {

@@ -1,5 +1,5 @@
 use std::env;
-use crate::distro::{LinuxDistro, DistroType};
+// use crate::distro::{LinuxDistro, DistroType};
 use crate::system::uninstall_system_by_id;
 use crate::ui::{print_info, print_success};
 use crate::i18n::Translator;
@@ -22,50 +22,9 @@ pub fn handle_command_line_args(args: &[String], translator: &Translator, _theme
             crate::ui::display_system_list(&metas, translator)?;
         }
         "--install" => {
-            if args.len() < 3 {
-                println!("\n  {}\n", translator.t("error_specify_distro"));
-                println!("  {}\n", translator.t_fmt("usage_install", &[&args[0]]));
-                return Ok(());
-            }
-            
-            let distro_type = match args[2].to_lowercase().as_str() {
-                "ubuntu" => DistroType::Ubuntu,
-                "kali" => DistroType::Kali,
-                "debian" => DistroType::Debian,
-                "centos" => DistroType::CentOS,
-                "fedora" => DistroType::Fedora,
-                _ => {
-                    println!("\n  {}\n", translator.t("error_unsupported_distro"));
-                    return Ok(());
-                }
-            };
-            
-            let mut name = None;
-            let mut _minimal = false;
-            
-            for i in 3..args.len() {
-                match args[i].as_str() {
-                    "--name" => {
-                        if i + 1 < args.len() {
-                            name = Some(args[i + 1].clone());
-                        }
-                    }
-                    "--minimal" => {
-                        _minimal = true;
-                    }
-                    _ => {}
-                }
-            }
-            
-            let distro = if let Some(name) = name {
-                LinuxDistro::with_name(distro_type, name)
-            } else {
-                LinuxDistro::new(distro_type)
-            };
-            
-            print_info(&translator.t_fmt("installing_package", &[&distro_type.to_string()]));
-            distro.install(translator)?;
-            print_success(&translator.t("installation_complete"));
+            // TODO: Update to use new distro system
+            println!("\n  {}\n", translator.t("error_specify_distro"));
+            println!("  {}\n", translator.t_fmt("usage_install", &[&args[0]]));
         }
         "--uninstall" => {
             if args.len() < 3 {

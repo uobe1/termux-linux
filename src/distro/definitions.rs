@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use crate::utils::arch::Architecture;
-use std::fs;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -58,6 +57,12 @@ impl DistroName {
             DistroName::Alpine => "Alpine".to_string(),
             DistroName::Pardus => "Pardus".to_string(),
         }
+    }
+}
+
+impl std::fmt::Display for DistroName {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
     }
 }
 

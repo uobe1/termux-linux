@@ -3,6 +3,8 @@ use std::fs;
 use std::path::PathBuf;
 use std::collections::HashMap;
 use crate::distro::SystemMeta;
+use std::process::{Command, Stdio};
+use std::io::{BufRead, BufReader};
 
 pub fn get_home_dir() -> Result<PathBuf, Box<dyn std::error::Error>> {
     match env::var("HOME") {
@@ -81,6 +83,69 @@ pub fn read_config_file(path: &PathBuf) -> Result<HashMap<String, String>, Box<d
     }
     
     Ok(config)
+}
+
+pub fn extract_tar_xz_with_progress<F>(
+    archive_path: &PathBuf,
+    extract_dir: &PathBuf,
+    mut progress_callback: F,
+) -> Result<u64, Box<dyn std::error::Error>>
+where
+    F: FnMut(u64, &str),
+{
+    let _total_files = count_files_in_tar_xz(archive_path)?;
+    
+    let mut child = Command::new("tar")
+        .args(&["-xJf", archive_path.to_str().unwrap(), "-C", extract_dir.to_str().unwrap(), "--verbose"])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
+    
+    let stdout = child.stdout.take().ok_or("Failed to capture stdout")?;
+    let reader = BufReader::new(stdout);
+    let mut extracted_files = 0u64;
+    
+    for line_result in reader.lines() {
+        let line = line_result?;
+        let file_name = line.trim().to_string();
+        
+        extracted_files += 1;
+        progress_callback(extracted_files, &file_name);
+    }
+    
+    let status = child.wait()?;
+    if !status.success() {
+        return Err("解压失败".into());
+    }
+    
+    Ok(extracted_files)
+}
+
+pub fn count_files_in_tar_xz(archive_path: &PathBuf) -> Result<u64, Box<dyn std::error::Error>> {
+    let output = Command::new("tar")
+        .args(&["-tf", archive_path.to_str().unwrap()])
+        .output()?;
+    
+    if !output.status.success() {
+        return Ok(100);
+    }
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let file_count = stdout.lines().count() as u64;
+    
+    Ok(if file_count > 0 { file_count } else { 100 })
+}
+
+pub fn extract_tar_xz(archive_path: &PathBuf, extract_dir: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let status = Command::new("tar")
+        .args(&["-xJf", archive_path.to_str().unwrap(), "-C", extract_dir.to_str().unwrap()])
+        .status()?;
+    
+    if !status.success() {
+        return Err("解压失败".into());
+    }
+    
+    Ok(())
 }
 
 #[cfg(test)]
