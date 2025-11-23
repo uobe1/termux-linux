@@ -1,5 +1,6 @@
 pub mod name;
 pub mod meta;
+pub mod meta_serde;
 pub mod definitions;
 
 pub use name::DistroName;

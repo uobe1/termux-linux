@@ -115,3 +115,8 @@ impl ConfigManager {
         Ok(config.get(&init_key).cloned())
     }
 }
+
+#[cfg(test)]
+mod parser_tests_core;
+#[cfg(test)]
+mod parser_tests_init;

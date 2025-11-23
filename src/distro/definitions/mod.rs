@@ -1,5 +1,8 @@
 pub mod base;
+pub mod adelie;
+pub mod debian_core;
 pub mod debian;
+pub mod arch_core;
 pub mod arch;
 pub mod redhat;
 pub mod others;

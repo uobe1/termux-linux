@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::utils::arch::Architecture;
 use crate::distro::name::DistroName;
-use super::base::DistroDefinition;
+use crate::distro::definitions::distro_definition::DistroDefinition;
 
 pub fn get_definitions() -> Vec<DistroDefinition> {
     let mut distros = Vec::new();

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::utils::arch::Architecture;
-use super::name::DistroName;
+use crate::distro::name::DistroName;
 
 #[derive(Debug, Clone)]
 pub struct DistroDefinition {

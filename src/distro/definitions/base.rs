@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 use crate::utils::arch::Architecture;
-use super::name::DistroName;
-use super::definitions::distro_definition::DistroDefinition;
+use crate::distro::name::DistroName;
+use crate::distro::definitions::distro_definition::DistroDefinition;
 
 pub fn get_all_distros() -> Vec<DistroDefinition> {
     let mut distros = Vec::new();
     
-    distros.extend(super::adelie::get_definition());
-    distros.extend(super::debian::get_definitions());
-    distros.extend(super::arch::get_definitions());
-    distros.extend(super::redhat::get_definitions());
-    distros.extend(super::others::get_definitions());
+    distros.extend(crate::distro::definitions::adelie::get_definition());
+    distros.extend(crate::distro::definitions::debian::get_definitions());
+    distros.extend(crate::distro::definitions::arch::get_definitions());
+    distros.extend(crate::distro::definitions::redhat::get_definitions());
+    distros.extend(crate::distro::definitions::others::get_definitions());
     
     distros
 }
