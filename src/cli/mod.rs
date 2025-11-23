@@ -29,9 +29,9 @@ pub fn run_cli(translator: &Translator, theme: &Theme) -> Result<(), Box<dyn std
     check_and_install_screenfetch(translator)?;
     
     loop {
-        interactive::display_logo(translator);
+        interactive::display_logo(translator, theme);
         let installed_systems = crate::utils::get_installed_systems()?;
-        let choice = interactive::get_user_choice(translator)?;
+        let choice = interactive::get_user_choice(translator, theme)?;
         
         match choice {
             1 => install_interactive(translator)?,

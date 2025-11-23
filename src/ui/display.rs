@@ -60,7 +60,6 @@ pub fn print_info(message: &str) {
     println!("  ℹ {}", message);
 }
 
-#[allow(dead_code)]
 pub fn print_success_theme(message: &str, theme: &Theme) {
     println!("\n  {}\n", theme.success(&format!("✓ {}", message)));
 }
@@ -70,7 +69,6 @@ pub fn print_error_theme(message: &str, theme: &Theme) {
     println!("\n  {}\n", theme.error(&format!("✗ {}", message)));
 }
 
-#[allow(dead_code)]
 pub fn print_info_theme(message: &str, theme: &Theme) {
     println!("  {}", theme.info(&format!("ℹ {}", message)));
 }
